@@ -1,8 +1,6 @@
+import allure
 import random
 import string
-
-import requests
-import allure
 
 from helpers.helpers_on_check_response import check_status_code, _print_info, check_key_and_value_in_body, \
     check_user_data
@@ -25,16 +23,16 @@ def generate_random_string(length):
 
 
 # генерируем логин, пароль и имя пользователя
-@allure.step('Генерируем данные нового пользователя: email, password, user_name')
+@allure.step('Генерируем данные нового пользователя: email, password, name')
 def generate_random_user_data():
     email = generate_random_string(10)+'@mail.ru'
     password = generate_random_string(10)
-    user_name = generate_random_string(10)
+    name = generate_random_string(10)
     # собираем тело запроса
     user_data = {
-        "email": email,
-        "password": password,
-        "name": user_name
+        KEYS.EMAIL_KEY: email,            # "email"
+        KEYS.PASSWORD_KEY: password,      # "password"
+        KEYS.NAME_KEY: name               # "name"
     }
     # возвращаем словарь
     return user_data
@@ -53,8 +51,8 @@ def create_and_check_user(user_data=None):
     # проверяем в теле ответа: { "success" = True }
     check_key_and_value_in_body(response, KEYS.SUCCESS_KEY, True)
     # возвращаем данные пользователя в теле ответа
-    email = user_data["email"]
-    name = user_data["name"]
+    email = user_data[KEYS.EMAIL_KEY]
+    name = user_data[KEYS.NAME_KEY]
     # проверяем полученные данные и возвращаем 2 токена
     user_token, refresh_token = check_user_data(response, email, name)
     return user_token, refresh_token
