@@ -6,14 +6,14 @@ SERVER_URL = 'https://stellarburgers.nomoreparties.site'
 
 # Эндпойнты (ручки) запросов к API
 CREATE_USER = '/api/auth/register'  # Регистрация пользователя: POST '/api/auth/register'
-LOGIN_USER = '/api/auth/login'  # Авторизация пользователя: POST '/api/auth/login'
-LOGOUT_USER = '/api/auth/logout'  # Выход из системы: POST '/api/auth/logout'
+LOGIN_USER = '/api/auth/login'      # Авторизация пользователя: POST '/api/auth/login'
+LOGOUT_USER = '/api/auth/logout'    # Выход из системы: POST '/api/auth/logout'
 
-DELETE_USER = '/api/auth/user'  # Удаление пользователя: DELETE '/api/auth/user'
-GET_USER_DATA = '/api/auth/user'  # Получение данных пользователя: GET '/api/auth/user'
-UPDATE_USER_DATA = '/api/auth/user'  # Обновление данных пользователя: PATCH '/api/auth/user'
+DELETE_USER = '/api/auth/user'      # Удаление пользователя: DELETE '/api/auth/user'
+GET_USER_DATA = '/api/auth/user'    # Получение данных пользователя: GET '/api/auth/user'
+UPDATE_USER_DATA = '/api/auth/user' # Обновление данных пользователя: PATCH '/api/auth/user'
 
-UPDATE_TOKEN = '/api/auth/token'  # Обновление токена: POST '/api/auth/token'
+UPDATE_TOKEN = '/api/auth/token'    # Обновление токена: POST '/api/auth/token'
 
 
 class STATUS_CODES:
@@ -26,14 +26,27 @@ class STATUS_CODES:
 
 
 class RESPONSE_KEYS:
-    MESSAGE_KEY = 'message'
-    OK_KEY      = 'ok'
-    ID_KEY      = 'id'
-    LOGIN       = 'login'
-    PASSWORD    = 'password'
-    TRACK       = 'track'
-    ORDERS      = 'orders'
-    ORDER       = 'order'
+    SUCCESS_KEY     = 'success'
+    USER_KEY        = 'user'
+    EMAIL_KEY       = 'email'
+    NAME_KEY        = 'name'
+    ACCESS_TOKEN    = 'accessToken'     # str: "Bearer ..."
+    REFRESH_TOKEN   = 'refreshToken'    # str: ""
+    MESSAGE_KEY     = 'message'
+
+    # поля для отправки запроса
+    AUTH_TOKEN      = 'authorization'
+    PASSWORD_KEY    = 'password'
+
+ACCESS_TOKEN_PREFIX = "Bearer "
+
+    #OK_KEY      = 'ok'
+    #ID_KEY      = 'id'
+    #LOGIN       = 'login'
+    #PASSWORD    = 'password'
+    #TRACK       = 'track'
+    #ORDERS      = 'orders'
+    #ORDER       = 'order'
 
 
 

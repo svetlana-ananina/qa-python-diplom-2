@@ -4,9 +4,12 @@ import string
 import requests
 import allure
 
-from helpers_on_requests import request_on_create_user, request_on_delete_user
+from helpers.helpers_on_check_response import check_status_code, _print_info, check_key_and_value_in_body, \
+    check_user_data
+from helpers.helpers_on_requests import request_on_create_user, request_on_delete_user, request_on_login_user
 
-from data import STATUS_CODES as code, _to_print
+from data import STATUS_CODES as CODE
+from data import RESPONSE_KEYS as KEYS
 from data import _to_print
 
 # Вспомогательные функции
@@ -37,42 +40,49 @@ def generate_random_user_data():
     return user_data
 
 
-# Логирование - вывод в <stdout>
-def _print_response(response):
-    if _to_print:
-        print(f'response="{response}", response.text="{response.text}"')
+# метод создания нового пользователя и проверки полученного ответа
+#@allure.step('Создаем нового пользователя')
+def create_and_check_user(user_data=None):
+    # генерируем уникальные данные нового пользователя
+    if user_data is None:
+        user_data = generate_random_user_data()
+    # отправляем запрос на создание пользователя
+    response = try_to_create_user(user_data)
+    # проверяем что получен код ответа 200
+    check_status_code(response, CODE.OK)
+    # проверяем в теле ответа: { "success" = True }
+    check_key_and_value_in_body(response, KEYS.SUCCESS_KEY, True)
+    # возвращаем данные пользователя в теле ответа
+    email = user_data["email"]
+    name = user_data["name"]
+    # проверяем полученные данные и возвращаем 2 токена
+    user_token, refresh_token = check_user_data(response, email, name)
+    return user_token, refresh_token
 
 
-def _print_response_value(name, value):
-    if _to_print:
-        print(f'{name}="{value}"')
-
-
-def _print_info(info_str):
-    if _to_print:
-        print(info_str)
-
-
-# метод создания нового курьера, возвращает данные нового курьера: логин, пароль и имя
-@allure.title('Создаем нового курьера')
-def create_user():
+@allure.step('Создаем нового пользователя')
+def try_to_create_user(user_data):
     _print_info('\nСоздаем нового пользователя ...')
-    user_data = generate_random_user_data()
     response = request_on_create_user(user_data)
+    return response
 
 
-    #_print_info('\nЗапуск фикстуры "create_new_courier()"...')
-    # собираем тело запроса = данные нового курьера
-    #user_data = generate_random_courier_data()
-    # отправляем запрос на создание нового курьера и сохраняем ответ в переменную response
-    #response = create_courier(user_data)
-    # проверяем что получен код ответа 201
-    #check_status_code(response, code.CREATED)
-    # проверяем тело ответа:   {'ok' = True}
-    #check_key_and_value_in_body(response, KEYS.OK_KEY, True)
-    # возвращаем ответ API и данные пользователя
-    #_print_info('\nОкончание работы фикстуры create_new_courier()"...')
-    #yield user_data
-    pass
+@allure.step('Авторизация пользователя')
+def try_to_login_user(email, password):
+    _print_info('\nАвторизация пользователя ...')
+    payload = {KEYS.EMAIL_KEY: email, KEYS.PASSWORD_KEY: password}
+    # отправляем запрос на авторизацию пользователя
+    response = request_on_login_user(payload)
+    return response
+
+
+@allure.step('Удаляем пользователя')
+def try_to_delete_user(aurh_token):
+    _print_info('\nУдаляем пользователя ...')
+    payload = {KEYS.AUTH_TOKEN: aurh_token}
+    response = request_on_delete_user(payload)
+    return response
+
+
 
 
