@@ -42,19 +42,6 @@ def check_success(response, expected_value):
     return received_body
 
 
-# @allure.step('Проверяем сообщение в ответе')
-# def check_message(response, expected_message):
-    # received_text = response.text
-    # проверяем тело ответа
-    # received_body = check_response_body(response)
-    # проверяем что в ответе есть "message"
-    # assert KEYS.MESSAGE_KEY in received_body, f'В ответе отсутствует ключ "{KEYS.MESSAGE_KEY}", текст: "{received_text}"'
-    # проверяем сообщение об ошибке
-    # received_message = received_body[KEYS.MESSAGE_KEY]
-    # assert received_message == expected_message, f'Получено неверное сообщение: ожидалось "{expected_message}", получено "{received_message}"'
-    # return received_body
-
-
 @allure.step('Проверяем сообщение в ответе')
 def check_message(received_body, expected_message):
     # проверяем что в ответе есть "message"
@@ -93,13 +80,9 @@ def check_user_data(response, email, name):
     received_user_data = check_key_in_body(received_body, KEYS.USER_KEY)
     assert type(received_user_data) is dict
 
-    # проверяем наличие в словаре "user" полей "email" и "name"
-    assert KEYS.EMAIL_KEY in received_user_data, f'В ответе отсутствует ключ "{KEYS.EMAIL_KEY}", получен ответ: "{received_text}"'
-    assert KEYS.NAME_KEY in received_user_data, f'В ответе отсутствует ключ "{KEYS.NAME_KEY}", получен ответ: "{received_text}"'
-    received_user_email = received_user_data[KEYS.EMAIL_KEY]
-    received_user_name = received_user_data[KEYS.NAME_KEY]
-    assert received_user_email == email, f'Получено неверное значение ключа "{KEYS.NAME_KEY}": ожидалось "{name}", получено "{received_user_email}"'
-    assert received_user_name == name, f'Получено неверное значение ключа "{KEYS.NAME_KEY}": ожидалось "{name}", получено "{received_user_name}"'
+    # проверяем наличие в словаре "user" и значение полей "email" и "name"
+    check_key_and_value_in_body(received_user_data, KEYS.EMAIL_KEY, email)
+    check_key_and_value_in_body(received_user_data, KEYS.NAME_KEY, name)
 
     # проверяем наличие в ответе ключа "accessToken" и получаем его значение - строку
     user_token = check_key_in_body(received_body, KEYS.ACCESS_TOKEN)
