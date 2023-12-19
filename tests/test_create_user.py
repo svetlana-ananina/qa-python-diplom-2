@@ -63,3 +63,24 @@ class TestCreateUser:
         check_message(received_body, text.USER_ALREADY_EXISTS)
 
 
+    @allure.title('Проверка создания пользователя - не заполнено одно из полей')
+    @pytest.mark.parametrize('field', [
+        KEYS.EMAIL_KEY, KEYS.PASSWORD_KEY, KEYS.NAME_KEY        # незаполненное поле для теста
+    ])
+    def test_create_user_empty_field_error(self, field):
+        # генерируем уникальные данные нового пользователя: email, password, user_name
+        user_data = generate_random_user_data()
+        # удаляем поле field
+        user_data.pop(field)
+
+        # отправляем запрос на создание пользователя
+        response = try_to_create_user(user_data)
+
+        # проверяем что получен код ответа 403
+        check_status_code(response, CODE.FORBIDDEN)
+        # проверяем в теле ответа: { "success" = False }
+        received_body = check_success(response, False)
+        # проверяем сообщение в теле ответа: { "message" = "User already exists" }
+        check_message(received_body, text.MISSING_REQUIRED_FIELD)
+
+

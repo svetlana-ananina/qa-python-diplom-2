@@ -61,7 +61,7 @@ def create_and_check_user(user_data=None):
 
 @allure.step('Создаем нового пользователя')
 def try_to_create_user(user_data):
-    _print_info('\nСоздаем нового пользователя ...')
+    _print_info('\nСоздаем/регистрируем нового пользователя ...')
     response = request_on_create_user(user_data)
     return response
 

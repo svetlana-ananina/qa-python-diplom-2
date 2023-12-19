@@ -32,6 +32,7 @@ def check_status_code(response, expected_code):
 @allure.step('Проверяем значение поля "success" в ответе')
 def check_success(response, expected_value):
     received_text = response.text
+    _print_info(f'\nreceived_text="{received_text}"')
     # проверяем что в ответе есть "success"
     assert KEYS.SUCCESS_KEY in response.json(), f'В ответе отсутствует ключ "{KEYS.SUCCESS_KEY}", получено: "{received_text}"'
     # проверяем тело ответа
@@ -48,7 +49,7 @@ def check_message(received_body, expected_message):
     assert KEYS.MESSAGE_KEY in received_body, f'В ответе отсутствует ключ "{KEYS.MESSAGE_KEY}", получено: "{received_body}"'
     # проверяем сообщение об ошибке
     received_message = received_body[KEYS.MESSAGE_KEY]
-    assert received_message == expected_message, f'Получено неверное значение поля "{KEYS.MESSAGE_KEY}": ожидалось "{expected_message}", получено "{received_message}"'
+    assert received_message == expected_message, f'Получено неверное значение поля "{KEYS.MESSAGE_KEY}":\nожидалось "{expected_message}"\nполучено "{received_message}"'
     return received_message
 
 
