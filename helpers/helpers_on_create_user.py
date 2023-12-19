@@ -3,7 +3,7 @@ import random
 import string
 
 from helpers.helpers_on_check_response import check_status_code, _print_info, check_key_and_value_in_body, \
-    check_user_data
+    check_user_data, check_success
 from helpers.helpers_on_requests import request_on_create_user, request_on_delete_user, request_on_login_user
 
 from data import STATUS_CODES as CODE
@@ -49,7 +49,8 @@ def create_and_check_user(user_data=None):
     # проверяем что получен код ответа 200
     check_status_code(response, CODE.OK)
     # проверяем в теле ответа: { "success" = True }
-    check_key_and_value_in_body(response, KEYS.SUCCESS_KEY, True)
+    # check_key_and_value_in_body(response, KEYS.SUCCESS_KEY, True)
+    check_success(response, True)
     # возвращаем данные пользователя в теле ответа
     email = user_data[KEYS.EMAIL_KEY]
     name = user_data[KEYS.NAME_KEY]

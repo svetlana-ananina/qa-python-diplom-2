@@ -1,8 +1,12 @@
 import pytest
 import allure
 
-from helpers.helpers_on_check_response import _print_info
-from helpers.helpers_on_create_user import generate_random_user_data, create_and_check_user
+from data import STATUS_CODES as CODE
+from data import RESPONSE_KEYS as KEYS
+from data import RESPONSE_MESSAGES as text
+
+from helpers.helpers_on_check_response import _print_info, check_status_code, check_success, check_message
+from helpers.helpers_on_create_user import generate_random_user_data, create_and_check_user, try_to_create_user
 
 
 class TestCreateUser:
@@ -24,8 +28,8 @@ class TestCreateUser:
         #     _print_info(f'\nУдаляем пользователя ...\nauth_token="{auth_token}"')
         #     response = try_to_delete_user(auth_token)
 
-    @allure.title('Создаем нового пользователя')
-    def test_create_user(self):
+    @allure.title('Проверка создания пользователя - регистрация уникального пользователя')
+    def test_create_user_new_user(self):
         # генерируем уникальные данные нового пользователя: email, password, user_name
         user_data = generate_random_user_data()
         # отправляем запрос на создание пользователя и проверяем полученные данные
@@ -39,4 +43,23 @@ class TestCreateUser:
         # self.user_data[KEYS.ACCESS_TOKEN] = user_token
         # self.user_data[KEYS.REFRESH_TOKEN] = refresh_token
         # _print_info(f'\nuser_data={self.user_data}\n')
+
+    @allure.title('Проверка создания пользователя - повторная регистрация пользователя')
+    def test_create_user_double_user_error(self):
+        # генерируем уникальные данные нового пользователя: email, password, user_name
+        user_data = generate_random_user_data()
+        # отправляем запрос на создание пользователя и проверяем полученные данные
+        # user_token, refresh_token = create_user(user_data)
+        create_and_check_user(user_data)
+
+        # отправляем повторный запрос на создание того же пользователя
+        response = try_to_create_user(user_data)
+
+        # проверяем что получен код ответа 403
+        check_status_code(response, CODE.FORBIDDEN)
+        # проверяем в теле ответа: { "success" = False }
+        received_body = check_success(response, False)
+        # проверяем сообщение в теле ответа: { "message" = "User already exists" }
+        check_message(received_body, text.USER_ALREADY_EXISTS)
+
 

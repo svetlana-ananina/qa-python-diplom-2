@@ -40,6 +40,12 @@ class RESPONSE_KEYS:
 
 ACCESS_TOKEN_PREFIX = "Bearer "
 
+
+class RESPONSE_MESSAGES:
+    USER_ALREADY_EXISTS     = 'User already exists'
+    MISSING_REQUIRED_FIELD  = '"Email, password and name are required fields'
+
+
     #OK_KEY      = 'ok'
     #ID_KEY      = 'id'
     #LOGIN       = 'login'
