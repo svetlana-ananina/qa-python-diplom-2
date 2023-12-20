@@ -8,7 +8,7 @@ from data import RESPONSE_MESSAGES as text
 from helpers.helpers_on_check_response import check_status_code, check_success, check_user_data, check_message
 from helpers.helpers_on_check_response import _print_info
 from helpers.helpers_on_create_user import generate_random_user_data, try_to_delete_user, create_user, \
-    try_to_update_user, generate_random_user_name, generate_random_user_login
+    try_to_update_user, generate_random_user_name, generate_random_user_login, generate_random_user_password
 
 
 class TestUpdateUser:
@@ -40,8 +40,8 @@ class TestUpdateUser:
     @allure.title('Проверка обновления данных пользователя для авторизованного пользователя')
     @pytest.mark.parametrize('field', [         # обновляемое поле
         KEYS.EMAIL_KEY,
-        # KEYS.PASSWORD_KEY,
-        KEYS.NAME_KEY
+        KEYS.NAME_KEY,
+        KEYS.PASSWORD_KEY
     ])
     def test_update_user_success(self, field):
         # генерируем данные пользователя: email, password, user_name
@@ -54,8 +54,10 @@ class TestUpdateUser:
         # генерируем новые данные пользователя в поле field
         if field is KEYS.EMAIL_KEY:
             new_field_data = generate_random_user_login()
-        else:
+        elif field is KEYS.NAME_KEY:
             new_field_data = generate_random_user_name()
+        else:
+            new_field_data = generate_random_user_password()
         # сохраняем новые данные пользователя
         new_user_data = user_data.copy()
         new_user_data[field] = new_field_data
@@ -77,8 +79,8 @@ class TestUpdateUser:
     @allure.title('Проверка обновления данных пользователя для неавторизованного пользователя')
     @pytest.mark.parametrize('field', [         # обновляемое поле
         KEYS.EMAIL_KEY,
-        # KEYS.PASSWORD_KEY,
-        KEYS.NAME_KEY
+        KEYS.NAME_KEY,
+        KEYS.PASSWORD_KEY
     ])
     def test_update_user_not_authorized_error(self, field):
         # генерируем данные пользователя: email, password, user_name
@@ -91,8 +93,10 @@ class TestUpdateUser:
         # генерируем новые данные пользователя в поле field
         if field is KEYS.EMAIL_KEY:
             new_field_data = generate_random_user_login()
-        else:
+        elif field is KEYS.NAME_KEY:
             new_field_data = generate_random_user_name()
+        else:
+            new_field_data = generate_random_user_password()
         # сохраняем новые данные пользователя
         new_user_data = user_data.copy()
         new_user_data[field] = new_field_data

@@ -48,11 +48,9 @@ class TestResetPassword:
         self.init_teardown(auth_token, refresh_token)
         # генерируем новый пароля
         new_password = generate_random_user_password()
-        # token = '0abd9bd4-bb34-407b-91a1-94be2979d400'
-        token = '/reset-password/' + refresh_token
 
         # отправляем запрос на изменение данных пользователя
-        response = try_to_reset_password(new_password, token)
+        response = try_to_reset_password(new_password, refresh_token)
 
         # проверяем что получен код ответа 200
         check_status_code(response, CODE.OK)
