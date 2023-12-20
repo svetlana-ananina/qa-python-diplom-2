@@ -2,10 +2,9 @@ import allure
 import random
 import string
 
-from helpers.helpers_on_check_response import check_status_code, _print_info, check_key_and_value_in_body, \
-    check_new_user_data, check_success
+from helpers.helpers_on_check_response import check_status_code, _print_info, check_new_user_data, check_success
 from helpers.helpers_on_requests import request_on_create_user, request_on_delete_user, request_on_login_user, \
-    request_on_logout_user, request_on_update_user
+    request_on_logout_user, request_on_update_user, request_on_reset_password
 
 from data import STATUS_CODES as CODE
 from data import RESPONSE_KEYS as KEYS
@@ -112,18 +111,31 @@ def try_to_delete_user(auth_token):
 
 
 @allure.step('Обновляем данные пользователя')
-def try_to_update_user(auth_token, user_data):
+def try_to_update_user(user_data, auth_token=None):
     _print_info('\nОбновляем данные пользователя ...')
-    headers = {KEYS.AUTH_TOKEN: auth_token}
-    response = request_on_update_user(headers, user_data)
+    if auth_token is not None:
+        headers = {KEYS.AUTH_TOKEN: auth_token}
+    else:
+        headers = None
+    response = request_on_update_user(user_data, headers)
     return response
 
 
 @allure.step('Выход пользователя из системы')
-def try_to_logout_user(refresh_token):
+def try_to_logout_user(token):
     _print_info('\nВыход пользователя из системы ...')
-    payload = {KEYS.TOKEN: refresh_token}
+    payload = {KEYS.TOKEN: token}
     response = request_on_logout_user(payload)
     return response
 
+
+@allure.step('Устанавливаем новый пароль пользователя')
+def try_to_reset_password(new_password, token):
+    _print_info('\nУстанавливаем новый пароль пользователя ...')
+    payload = {
+        KEYS.PASSWORD_KEY: new_password,
+        KEYS.TOKEN: token
+    }
+    response = request_on_reset_password(payload)
+    return response
 

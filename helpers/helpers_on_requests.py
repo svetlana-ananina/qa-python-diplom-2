@@ -1,7 +1,7 @@
 import requests
 import allure
 
-from data import SERVER_URL, LOGIN_USER, LOGOUT_USER, UPDATE_USER
+from data import SERVER_URL, LOGIN_USER, LOGOUT_USER, UPDATE_USER, RESET_PASSWORD
 from data import CREATE_USER, DELETE_USER
 from data import _to_print
 from helpers.helpers_on_check_response import _print_info, _print_response
@@ -44,11 +44,22 @@ def request_on_delete_user(headers):
 
 
 @allure.step('Отправляем API-запрос на обновление данных пользователя')
-def request_on_update_user(headers, payload):
+def request_on_update_user(payload, headers=None):
     request_url = f'{SERVER_URL}{UPDATE_USER}'
     _print_info(f'\nОтправляем запрос на обновление данных пользователя: PATCH url="{request_url}"\nheaders="{headers}"\njson="{payload}"')
-    response = requests.patch(f'{request_url}', headers=headers)
+    if headers is not None:
+        response = requests.patch(f'{request_url}', headers=headers, json=payload)
+    else:
+        response = requests.patch(f'{request_url}', json=payload)
     _print_response(response)
     return response
 
+
+@allure.step('Отправляем API-запрос на изменение пароля пользователя')
+def request_on_reset_password(payload):
+    request_url = f'{SERVER_URL}{RESET_PASSWORD}'
+    _print_info(f'\nОтправляем запрос на изменение пароля пользователя: POST url="{request_url}"\njson="{payload}"')
+    response = requests.post(f'{request_url}', json=payload)
+    _print_response(response)
+    return response
 

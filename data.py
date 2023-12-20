@@ -10,12 +10,12 @@ LOGIN_USER = '/api/auth/login'      # Авторизация пользоват�
 LOGOUT_USER = '/api/auth/logout'    # Выход из системы: POST '/api/auth/logout', body={"token": "{{refreshToken}}"}
 DELETE_USER = '/api/auth/user'      # Удаление пользователя: DELETE '/api/auth/user'
                                     # headers={"Authorization": "Bearer {auth_token}"}
-                                    # response=<Response [202]>, text={"success":true,"message":"User successfully removed"}
 GET_USER_DATA = '/api/auth/user'    # Получение данных пользователя: GET '/api/auth/user'
 UPDATE_USER = '/api/auth/user'      # Обновление данных пользователя: PATCH '/api/auth/user'
+RESET_PASSWORD = '/api/password-reset/reset'    # POST '/api/password-reset/reset'
+                                                # { "password": "", "token": "" }
 
 UPDATE_TOKEN = '/api/auth/token'    # Обновление токена: POST '/api/auth/token'
-
 
 class STATUS_CODES:
     OK              = 200
@@ -49,6 +49,7 @@ ACCESS_TOKEN_PREFIX = "Bearer "
 class RESPONSE_MESSAGES:
     LOGOUT                  = 'Successful logout'
     USER_DELETED            = 'User successfully removed'
+    PASSWORD_IS_RESET       = 'Password successfully reset'
 
     USER_ALREADY_EXISTS     = 'User already exists'
     MISSING_REQUIRED_FIELD  = 'Email, password and name are required fields'
