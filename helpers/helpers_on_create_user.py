@@ -2,9 +2,11 @@ import allure
 import random
 import string
 
-from helpers.helpers_on_check_response import check_status_code, _print_info, check_new_user_data, check_success
+from helpers.helpers_on_check_response import check_status_code, _print_info, check_new_user_data, check_success, \
+    check_key_in_body
 from helpers.helpers_on_requests import request_on_create_user, request_on_delete_user, request_on_login_user, \
-    request_on_logout_user, request_on_update_user, request_on_reset_password
+    request_on_logout_user, request_on_update_user, request_on_reset_password, request_on_get_ingredients, \
+    request_on_create_order
 
 from data import STATUS_CODES as CODE
 from data import RESPONSE_KEYS as KEYS
@@ -138,4 +140,55 @@ def try_to_reset_password(new_password, token):
     }
     response = request_on_reset_password(payload)
     return response
+
+
+@allure.step('Получаем данные об ингредиентах')
+def try_to_get_ingredients():
+    _print_info('\nПолучаем данные об ингредиентах ...')
+    response = request_on_get_ingredients()
+    return response
+
+
+@allure.step('Получаем данные об ингредиентах')
+def get_ingredients():
+    response = try_to_get_ingredients()
+    # проверяем что получен код ответа 200
+    check_status_code(response, CODE.OK)
+    # проверяем в теле ответа: { "success" = True }
+    received_body = check_success(response, True)
+    # проверяем наличие в ответе ключа "data" и получаем его значение - список ингредиентов (словарь)
+    ingredients = check_key_in_body(received_body, KEYS.DATA)
+    # проверяем что поле data содержит список и возвращаем его
+    assert type(ingredients) is list and len(ingredients) > 0
+    return ingredients
+
+
+@allure.step('Получаем списки булок, начинок и соусов из общего списка ингредиентов')
+def get_ingredients_by_type(ingredients):
+    bun_list = []
+    fillings_list = []
+    sauce_list = []
+    for item in ingredients:
+        # _print_info(f'item={item}')
+        # _print_info(f'item["type"] = {item["type"]}')
+        if item['type'] is 'bun':
+            bun_list.append(item)
+        elif item['type'] is 'sauce':
+            sauce_list.append(item)
+        else:
+            fillings_list.append(item)
+    return bun_list, fillings_list, sauce_list
+
+
+@allure.step('Создаем заказ')
+def try_to_create_order(ingredient_list, auth_token=None):      # ingredient_list - список _id ингредиентов
+    _print_info('\nСоздаем заказ ...')
+    if auth_token is not None:
+        headers = {KEYS.AUTH_TOKEN: auth_token}
+    else:
+        headers = None
+    payload = '{' + f'"{KEYS.INGREDIENTS}":{ingredient_list}' + '}'
+    response = request_on_create_order(payload, headers)
+    return response
+
 
