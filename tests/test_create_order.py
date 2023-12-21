@@ -8,8 +8,7 @@ from data import RESPONSE_MESSAGES as text
 from helpers.helpers_on_check_response import check_status_code, check_success, check_user_data, check_message
 from helpers.helpers_on_check_response import _print_info
 from helpers.helpers_on_create_user import generate_random_user_data, try_to_delete_user, create_user, \
-    try_to_update_user, generate_random_user_name, generate_random_user_login, generate_random_user_password, \
-    get_ingredients, try_to_create_order, get_ingredients_by_type
+    get_ingredients, try_to_create_order, get_buns_list, get_fillings_list, get_sauces_list
 
 
 class TestCreateOrder:
@@ -20,13 +19,15 @@ class TestCreateOrder:
         """
         _print_info(f'\nSetup "TestCreateOrder" ...')
         # Получаем список ингредиентов
-        self.ingredient_list = get_ingredients()
-        _print_info(f'self.ingredient_list = {self.ingredient_list}')
+        ingredients = get_ingredients()
+        _print_info(f'ingredients = {ingredients}')
         # получаем списки булок, начинок и соусов
-        self.bun_list, self.fillings_list, self.sauce_list = get_ingredients_by_type(self.ingredient_list)
-        _print_info(f'self.bun_list = {self.bun_list}')
+        self.buns_list = get_buns_list(ingredients)
+        self.fillings_list = get_fillings_list(ingredients)
+        self.sauces_list = get_sauces_list(ingredients)
+        _print_info(f'self.bun_list = {self.buns_list}')
         _print_info(f'self.fillings_list = {self.fillings_list}')
-        _print_info(f'self.sauce_list = {self.sauce_list}')
+        _print_info(f'self.sauce_list = {self.sauces_list}')
         self.to_teardown = False        # Выполнять удаление созданного пользователя
         self.auth_token = None
         self.refresh_token = None
@@ -56,14 +57,15 @@ class TestCreateOrder:
         # сохраняем полученные данные пользователя
         # self.init_teardown(auth_token, refresh_token)
 
-        assert len(self.bun_list) != 0 and len(self.fillings_list) != 0 and len(self.sauce_list) != 0, \
+        assert len(self.buns_list) != 0 and len(self.fillings_list) != 0 and len(self.sauces_list) != 0, \
             f'TestCreateOrder ошибка - в списке ингредиентов нет по крайней мере одного из типов (булки, начинки, соусы)'
         # составляем список ингредиентов для бургера
-        ingredients_id = [
-            (self.bun_list[0])[KEYS.ID_KEY],
+        ingredients_id_list = [
+            (self.buns_list[0])[KEYS.ID_KEY],
             (self.fillings_list[0])[KEYS.ID_KEY],
-            (self.sauce_list[0])[KEYS.ID_KEY]
+            (self.sauces_list[0])[KEYS.ID_KEY]
         ]
-        res = try_to_create_order(ingredients_id)
+        _print_info(f'ingredients_id_list={ingredients_id_list}')
+        res = try_to_create_order(ingredients_id_list)
 
 

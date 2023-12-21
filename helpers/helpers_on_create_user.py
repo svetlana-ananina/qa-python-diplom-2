@@ -163,21 +163,42 @@ def get_ingredients():
     return ingredients
 
 
-@allure.step('Получаем списки булок, начинок и соусов из общего списка ингредиентов')
-def get_ingredients_by_type(ingredients):
-    bun_list = []
-    fillings_list = []
-    sauce_list = []
+@allure.step('Получаем списки булок из общего списка ингредиентов')
+def get_buns_list(ingredients):
+    buns_list = []
     for item in ingredients:
-        # _print_info(f'item={item}')
-        # _print_info(f'item["type"] = {item["type"]}')
-        if item['type'] is 'bun':
-            bun_list.append(item)
-        elif item['type'] is 'sauce':
-            sauce_list.append(item)
-        else:
+        _print_info(f'item={item}')
+        # item_type = item['type']
+        # _print_info(f"item['type']={item['type']}")
+        # _print_info(f"item['type'] == 'bun' = {item['type'] == 'bun'}")
+        if item['type'] == 'bun':
+        # if item_type == 'bun':
+            buns_list.append(item)
+    _print_info(f'len(buns_list) = {len(buns_list)}')
+    _print_info(f'buns_list={buns_list}')
+    return buns_list
+
+
+@allure.step('Получаем списки начинок из общего списка ингредиентов')
+def get_fillings_list(ingredients):
+    fillings_list = []
+    for item in ingredients:
+        if item['type'] == 'main':
             fillings_list.append(item)
-    return bun_list, fillings_list, sauce_list
+    _print_info(f'len(fillings_list) = {len(fillings_list)}')
+    _print_info(f'fillings_list={fillings_list}')
+    return fillings_list
+
+
+@allure.step('Получаем списки соусов из общего списка ингредиентов')
+def get_sauces_list(ingredients):
+    sauces_list = []
+    for item in ingredients:
+        if item['type'] == 'sauce':
+            sauces_list.append(item)
+    _print_info(f'len(sauces_list) = {len(sauces_list)}')
+    _print_info(f'sauces_list={sauces_list}')
+    return sauces_list
 
 
 @allure.step('Создаем заказ')
