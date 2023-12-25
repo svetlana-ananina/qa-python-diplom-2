@@ -1,2 +1,2 @@
-# qa-python-diplom_2
+# qa-python-diplom-2
 Diplom_2

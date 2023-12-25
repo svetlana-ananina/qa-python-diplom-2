@@ -77,10 +77,11 @@ def request_on_get_ingredients():
 def request_on_create_order(payload,  headers=None):
     request_url = f'{SERVER_URL}{CREATE_ORDER}'
     _print_info(f'\nОтправляем запрос на создание заказа: POST url="{request_url}"\nheaders="{headers}"\njson="{payload}"')
-    if headers is not None:
-        response = requests.post(f'{request_url}', headers=headers, json=payload)
-    else:
-        response = requests.post(f'{request_url}', json=payload)
+    #if headers is not None:
+    #    response = requests.post(f'{request_url}', headers=headers, json=payload)
+    #else:
+    #    response = requests.post(f'{request_url}', json=payload)
+    response = requests.post(f'{request_url}', headers=headers, json=payload)
     _print_response(response)
     return response
 

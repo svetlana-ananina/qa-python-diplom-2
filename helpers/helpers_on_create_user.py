@@ -168,14 +168,10 @@ def get_buns_list(ingredients):
     buns_list = []
     for item in ingredients:
         _print_info(f'item={item}')
-        # item_type = item['type']
-        # _print_info(f"item['type']={item['type']}")
-        # _print_info(f"item['type'] == 'bun' = {item['type'] == 'bun'}")
         if item['type'] == 'bun':
-        # if item_type == 'bun':
             buns_list.append(item)
     _print_info(f'len(buns_list) = {len(buns_list)}')
-    _print_info(f'buns_list={buns_list}')
+    #_print_info(f'buns_list={buns_list}')
     return buns_list
 
 
@@ -186,7 +182,7 @@ def get_fillings_list(ingredients):
         if item['type'] == 'main':
             fillings_list.append(item)
     _print_info(f'len(fillings_list) = {len(fillings_list)}')
-    _print_info(f'fillings_list={fillings_list}')
+    #_print_info(f'fillings_list={fillings_list}')
     return fillings_list
 
 
@@ -197,7 +193,7 @@ def get_sauces_list(ingredients):
         if item['type'] == 'sauce':
             sauces_list.append(item)
     _print_info(f'len(sauces_list) = {len(sauces_list)}')
-    _print_info(f'sauces_list={sauces_list}')
+    #_print_info(f'sauces_list={sauces_list}')
     return sauces_list
 
 
@@ -205,10 +201,17 @@ def get_sauces_list(ingredients):
 def try_to_create_order(ingredient_list, auth_token=None):      # ingredient_list - список _id ингредиентов
     _print_info('\nСоздаем заказ ...')
     if auth_token is not None:
-        headers = {KEYS.AUTH_TOKEN: auth_token}
+        headers = {
+            "Autorization": auth_token,
+        }
+        #headers = {KEYS.AUTH_TOKEN: auth_token}
     else:
         headers = None
-    payload = '{' + f'"{KEYS.INGREDIENTS}":{ingredient_list}' + '}'
+
+    #payload = '{' + f'"{KEYS.INGREDIENTS}":{ingredient_list}' + '}'
+    payload = {
+        "ingredients": ingredient_list,
+    }
     response = request_on_create_order(payload, headers)
     return response
 

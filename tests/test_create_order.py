@@ -20,14 +20,11 @@ class TestCreateOrder:
         _print_info(f'\nSetup "TestCreateOrder" ...')
         # Получаем список ингредиентов
         ingredients = get_ingredients()
-        _print_info(f'ingredients = {ingredients}')
+        #_print_info(f'ingredients = {ingredients}')
         # получаем списки булок, начинок и соусов
         self.buns_list = get_buns_list(ingredients)
         self.fillings_list = get_fillings_list(ingredients)
         self.sauces_list = get_sauces_list(ingredients)
-        _print_info(f'self.bun_list = {self.buns_list}')
-        _print_info(f'self.fillings_list = {self.fillings_list}')
-        _print_info(f'self.sauce_list = {self.sauces_list}')
         self.to_teardown = False        # Выполнять удаление созданного пользователя
         self.auth_token = None
         self.refresh_token = None

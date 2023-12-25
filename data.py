@@ -81,7 +81,7 @@ class RESPONSE_MESSAGES:
     #ORDER       = 'order'
 
 
-ingredientsList = [
+INGREDIENTS_LIST = [
         {
             "_id": "61c0c5a71d1f82001bdaaa6d",
             "name": "Флюоресцентная булка R2-D3",
