@@ -5,7 +5,8 @@ from data import STATUS_CODES as CODE
 from data import RESPONSE_KEYS as KEYS
 from data import RESPONSE_MESSAGES as text
 
-from helpers.helpers_on_check_response import check_status_code, check_success, check_user_data, check_message
+from helpers.helpers_on_check_response import check_status_code, check_success, check_user_data, check_message, \
+    check_order_data
 from helpers.helpers_on_check_response import _print_info
 from helpers.helpers_on_create_user import generate_random_user_data, try_to_delete_user, create_user, \
     get_ingredients, try_to_create_order, get_buns_list, get_fillings_list, get_sauces_list
@@ -48,11 +49,11 @@ class TestCreateOrder:
     @allure.title('Проверка обновления данных пользователя для авторизованного пользователя')
     def test_create_order(self):
         # генерируем данные пользователя: email, password, user_name
-        # user_data = generate_random_user_data()
+        user_data = generate_random_user_data()
         # отправляем запрос на создание пользователя
-        # auth_token, refresh_token = create_user(user_data)
+        auth_token, refresh_token = create_user(user_data)
         # сохраняем полученные данные пользователя
-        # self.init_teardown(auth_token, refresh_token)
+        self.init_teardown(auth_token, refresh_token)
 
         assert len(self.buns_list) != 0 and len(self.fillings_list) != 0 and len(self.sauces_list) != 0, \
             f'TestCreateOrder ошибка - в списке ингредиентов нет по крайней мере одного из типов (булки, начинки, соусы)'
@@ -63,6 +64,16 @@ class TestCreateOrder:
             (self.sauces_list[0])[KEYS.ID_KEY]
         ]
         _print_info(f'ingredients_id_list={ingredients_id_list}')
-        res = try_to_create_order(ingredients_id_list)
 
+        # отправляем запрос на создание заказа
+        response = try_to_create_order(ingredients_id_list, auth_token)
+
+        # проверяем что получен код ответа 200
+        check_status_code(response, CODE.OK)
+        # проверяем в теле ответа: { "success" = True }
+        received_body = check_success(response, True)
+        # проверяем полученные данные пользователя в теле ответа - поле "user"
+        order_number, order_name = check_order_data(received_body)
+        _print_info(f'order_number={order_number}')
+        _print_info(f'order_name="{order_name}"')
 

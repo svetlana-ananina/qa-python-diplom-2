@@ -35,6 +35,7 @@ class STATUS_CODES:
 
 
 class RESPONSE_KEYS:
+
     SUCCESS_KEY     = 'success'
     USER_KEY        = 'user'
     EMAIL_KEY       = 'email'
@@ -50,11 +51,14 @@ class RESPONSE_KEYS:
     TYPE_MAIN       = 'main'            # основной ингредиент - начинка (filling)
     TYPE_SAUCE      = 'sauce'
 
+    ORDER_KEY       = 'order'
+    NUMBER_KEY      = 'number'
+
 
     # поля для отправки запроса
-    AUTH_TOKEN      = 'Authorization'   # delete: headers
+    AUTH_TOKEN_KEY  = 'Authorization'   # delete: headers
     PASSWORD_KEY    = 'password'
-    TOKEN           = 'token'           # logout: body, ="refreshToken"
+    TOKEN_KEY       = 'token'           # logout: body, ="refreshToken"
 
 
 ACCESS_TOKEN_PREFIX = "Bearer "

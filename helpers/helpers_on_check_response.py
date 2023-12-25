@@ -101,12 +101,31 @@ def check_new_user_data(received_body, user_data):
             ACCESS_TOKEN_PREFIX in auth_token and
             len(auth_token) > len(ACCESS_TOKEN_PREFIX)), f'Получено неверное значение ключа "{KEYS.ACCESS_TOKEN}": неправильный формат "{KEYS.ACCESS_TOKEN}"={auth_token}'
 
-    # проверяем наличие в ответе ключа "refreshToken" и получаем его значение - строку ""
+    # проверяем наличие в ответе ключа "refreshToken" и получаем его значение - строку `"..."
     refresh_token = check_key_in_body(received_body, KEYS.REFRESH_TOKEN)
     # проверяем токен
     assert (type(refresh_token) is str and
             len(refresh_token) > 0), f'Получено неверное значение ключа "{KEYS.REFRESH_TOKEN}": неправильный формат "{KEYS.REFRESH_TOKEN}"={refresh_token}'
     # возвращаем полученные токены
     return auth_token, refresh_token
+
+
+#
+# Проверка полученных данных после создания заказа
+@allure.step('Проверяем полученные данные пользователя - поле "user"')
+def check_order_data(received_body):
+    # проверяем наличие в ответе ключа "name" и получаем его значение - строка
+    order_name = check_key_in_body(received_body, KEYS.NAME_KEY)
+    assert type(order_name) is str, f'Получено неверное значение ключа "{KEYS.NAME_KEY}": ожидалось - строка, получено значение {order_name} тип {type(order_name)}'
+
+    # проверяем наличие в ответе ключа "order" и получаем его значение - словарь
+    received_order_data = check_key_in_body(received_body, KEYS.ORDER_KEY)
+    assert type(received_order_data) is dict
+
+    # проверяем в словаре "order" наличие и значения поля "number"
+    order_number = check_key_in_body(received_order_data, KEYS.NUMBER_KEY)
+    assert str(order_number).isdigit(), f'Получено неверное значение ключа "{KEYS.NUMBER_KEY}": ожидалось - число, получено значение {order_number} тип {type(order_number)}'
+
+    return order_number, order_name
 
 

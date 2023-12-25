@@ -107,7 +107,7 @@ def try_to_login_user(email, password):
 @allure.step('Удаляем пользователя')
 def try_to_delete_user(auth_token):
     _print_info('\nУдаляем пользователя ...')
-    headers = {KEYS.AUTH_TOKEN: auth_token}
+    headers = {KEYS.AUTH_TOKEN_KEY: auth_token}
     response = request_on_delete_user(headers)
     return response
 
@@ -116,7 +116,7 @@ def try_to_delete_user(auth_token):
 def try_to_update_user(user_data, auth_token=None):
     _print_info('\nОбновляем данные пользователя ...')
     if auth_token is not None:
-        headers = {KEYS.AUTH_TOKEN: auth_token}
+        headers = {KEYS.AUTH_TOKEN_KEY: auth_token}
     else:
         headers = None
     response = request_on_update_user(user_data, headers)
@@ -126,7 +126,7 @@ def try_to_update_user(user_data, auth_token=None):
 @allure.step('Выход пользователя из системы')
 def try_to_logout_user(token):
     _print_info('\nВыход пользователя из системы ...')
-    payload = {KEYS.TOKEN: token}
+    payload = {KEYS.TOKEN_KEY: token}
     response = request_on_logout_user(payload)
     return response
 
@@ -136,7 +136,7 @@ def try_to_reset_password(new_password, token):
     _print_info('\nУстанавливаем новый пароль пользователя ...')
     payload = {
         KEYS.PASSWORD_KEY: new_password,
-        KEYS.TOKEN: token
+        KEYS.TOKEN_KEY: token
     }
     response = request_on_reset_password(payload)
     return response
@@ -171,7 +171,6 @@ def get_buns_list(ingredients):
         if item['type'] == 'bun':
             buns_list.append(item)
     _print_info(f'len(buns_list) = {len(buns_list)}')
-    #_print_info(f'buns_list={buns_list}')
     return buns_list
 
 
@@ -182,7 +181,6 @@ def get_fillings_list(ingredients):
         if item['type'] == 'main':
             fillings_list.append(item)
     _print_info(f'len(fillings_list) = {len(fillings_list)}')
-    #_print_info(f'fillings_list={fillings_list}')
     return fillings_list
 
 
@@ -193,7 +191,6 @@ def get_sauces_list(ingredients):
         if item['type'] == 'sauce':
             sauces_list.append(item)
     _print_info(f'len(sauces_list) = {len(sauces_list)}')
-    #_print_info(f'sauces_list={sauces_list}')
     return sauces_list
 
 
@@ -202,15 +199,16 @@ def try_to_create_order(ingredient_list, auth_token=None):      # ingredient_lis
     _print_info('\nСоздаем заказ ...')
     if auth_token is not None:
         headers = {
-            "Autorization": auth_token,
+            #"Autorization": auth_token,
+            KEYS.AUTH_TOKEN_KEY: auth_token,
         }
-        #headers = {KEYS.AUTH_TOKEN: auth_token}
     else:
         headers = None
 
     #payload = '{' + f'"{KEYS.INGREDIENTS}":{ingredient_list}' + '}'
     payload = {
-        "ingredients": ingredient_list,
+        #"ingredients": ingredient_list,
+        KEYS.INGREDIENTS: ingredient_list,
     }
     response = request_on_create_order(payload, headers)
     return response
