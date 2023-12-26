@@ -3,6 +3,7 @@ import pytest
 import random
 import string
 
+from conftest import get_ingredients_from_api
 from helpers.helpers_on_check_response import check_status_code, _print_info, check_new_user_data, check_success, \
     check_key_in_body, check_ingredients
 from helpers.helpers_on_requests import request_on_create_user, request_on_delete_user, request_on_login_user, \
@@ -141,85 +142,6 @@ def try_to_reset_password(new_password, token):
     }
     response = request_on_reset_password(payload)
     return response
-
-
-# Вспомогательные методы для работы с ингредиентами
-@allure.step('Получаем данные об ингредиентах')
-def try_to_get_ingredients():
-    # Отправляем запрос на получение списка ингредиентов
-    _print_info('\nПолучаем данные об ингредиентах ...')
-    response = request_on_get_ingredients()
-    return response
-
-
-# Получаем данные об ингредиентах от API
-def get_ingredients():
-    response = try_to_get_ingredients()
-    # проверяем что получен код ответа 200
-    check_status_code(response, CODE.OK)
-    # проверяем в теле ответа: { "success" = True }
-    received_body = check_success(response, True)
-    # проверяем наличие в ответе ключа "data" и получаем его значение - список ингредиентов (словарь)
-    ingredients = check_key_in_body(received_body, KEYS.DATA)
-    # проверяем что поле data содержит список и возвращаем его
-    assert type(ingredients) is list and len(ingredients) > 0
-    return ingredients
-
-
-@allure.step('Получаем списки булок из общего списка ингредиентов')
-def get_buns_list(ingredients):
-    buns_list = []
-    for item in ingredients:
-        _print_info(f'item={item}')
-        if item['type'] == 'bun':
-            buns_list.append(item)
-    _print_info(f'len(buns_list) = {len(buns_list)}')
-    return buns_list
-
-
-@allure.step('Получаем списки начинок из общего списка ингредиентов')
-def get_fillings_list(ingredients):
-    fillings_list = []
-    for item in ingredients:
-        if item['type'] == 'main':
-            fillings_list.append(item)
-    _print_info(f'len(fillings_list) = {len(fillings_list)}')
-    return fillings_list
-
-
-@allure.step('Получаем списки соусов из общего списка ингредиентов')
-def get_sauces_list(ingredients):
-    sauces_list = []
-    for item in ingredients:
-        if item['type'] == 'sauce':
-            sauces_list.append(item)
-    _print_info(f'len(sauces_list) = {len(sauces_list)}')
-    return sauces_list
-
-
-@allure.step('Получаем список ингредиентов')
-def get_ingredient_list():
-    # Получаем список ингредиентов - отправляем запрос к API
-    ingredients = get_ingredients()
-    # получаем списки булок, начинок и соусов
-    buns_list = get_buns_list(ingredients)
-    fillings_list = get_fillings_list(ingredients)
-    sauces_list = get_sauces_list(ingredients)
-    # проверяем что списки ингредиентов не пусты
-    check_ingredients(buns_list, fillings_list, sauces_list)
-    return buns_list, fillings_list, sauces_list
-
-
-@allure.step('Создаем список ингредиентов для бургера')
-def create_ingredient_list_for_burger(buns_list, fillings_list, sauces_list):
-    ingredient_list = [
-            (buns_list[0])[KEYS.ID_KEY],
-            (fillings_list[0])[KEYS.ID_KEY],
-            (sauces_list[0])[KEYS.ID_KEY]
-        ]
-    _print_info(f'ingredient_list={ingredient_list}')
-
-    return ingredient_list
 
 
 # Вспомогательные методы для работы с заказами

@@ -1,6 +1,7 @@
 import pytest
 import allure
 
+from conftest import get_ingredients_from_api
 from data import STATUS_CODES as CODE
 from data import RESPONSE_KEYS as KEYS
 from data import RESPONSE_MESSAGES as text
@@ -9,21 +10,26 @@ from helpers.helpers_on_check_response import check_status_code, check_success, 
     check_order_data, check_ingredients, check_key_in_body, check_key_and_value_in_body
 from helpers.helpers_on_check_response import _print_info
 from helpers.helpers_on_create_user import generate_random_user_data, try_to_delete_user, create_user, \
-    get_ingredients, try_to_create_order, get_buns_list, get_fillings_list, get_sauces_list, \
-    create_ingredient_list_for_burger, get_ingredient_list, create_order, try_to_get_user_orders
+    create_order, try_to_get_user_orders
+from helpers.helpers_on_get_ingredients import create_ingredient_list_for_burger
 
 
-@pytest.mark.usefixtures('get_ingredient_list_from_api')
+@pytest.mark.usefixtures('get_ingredients_from_api')
 class TestGetUserOrders:
+    #ingredients = get_ingredients_from_api
 
-    def setup(self):
+    def setup(self, get_ingredients_from_api):
         """
         Инициализируем данные пользователя для удаления после завершения работы
         """
         _print_info(f'\nSetup "TestGetUserOrders" ...')
         # Получаем список ингредиентов
-        #self.buns_list, self.fillings_list, self.sauces_list = get_ingredient_list()
-        #self.buns_list, self.fillings_list, self.sauces_list = get_ingredient_list_from_api
+        #ingredients = get_ingredients_from_api
+
+        self.buns_list, self.fillings_list, self.sauces_list = get_ingredients_from_api
+        #self.buns_list = get_buns_list(ingredients)
+        #self.fillings_list = get_fillings_list(ingredients)
+        #self.sauces_list = get_sauces_list(ingredients)
         # создаем пользователя
         auth_token, refresh_token = create_user()
         # Сохраняем данные для удаления созданного пользователя
@@ -45,10 +51,9 @@ class TestGetUserOrders:
         self.refresh_token = refresh_token
 
     @allure.title('Проверка получения заказов для авторизованного пользователя')
-    def test_get_user_orders_authorized_user(self, get_ingredient_list_from_api):
+    def test_get_user_orders_authorized_user(self):
         # получаем список ингредиентов и составляем заказ
-        buns_list, fillings_list, sauces_list = get_ingredient_list_from_api
-        ingredient_list = create_ingredient_list_for_burger(buns_list, fillings_list, sauces_list)
+        ingredient_list = create_ingredient_list_for_burger(self.buns_list, self.fillings_list, self.sauces_list)
         # отправляем запрос на создание заказа для пользователя
         order_number, order_name = create_order(ingredient_list, auth_token=self.auth_token)
         _print_info(f'\norder_number={order_number}')

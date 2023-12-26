@@ -142,3 +142,14 @@ def check_ingredients(buns_list, fillings_list, sauces_list):
         f'TestCreateOrder ошибка - в списке ингредиентов нет по крайней мере одного из необходимых типов (булки, начинки, соусы)'
 
 
+def check_ingredients_list(response):
+    # проверяем что получен код ответа 200
+    check_status_code(response, CODE.OK)
+    # проверяем в теле ответа: { "success" = True }
+    received_body = check_success(response, True)
+    # проверяем наличие в ответе ключа "data" и получаем его значение - список ингредиентов (словарь)
+    ingredients = check_key_in_body(received_body, KEYS.DATA)
+    # проверяем что поле data содержит список и возвращаем его
+    assert type(ingredients) is list and len(ingredients) > 0
+    return ingredients
+

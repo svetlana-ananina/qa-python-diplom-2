@@ -8,9 +8,8 @@ from data import RESPONSE_MESSAGES as text
 from helpers.helpers_on_check_response import check_status_code, check_success, check_user_data, check_message, \
     check_order_data, check_ingredients
 from helpers.helpers_on_check_response import _print_info
-from helpers.helpers_on_create_user import generate_random_user_data, try_to_delete_user, create_user, \
-    get_ingredients, try_to_create_order, get_buns_list, get_fillings_list, get_sauces_list, get_ingredient_list, \
-    create_ingredient_list_for_burger
+from helpers.helpers_on_create_user import generate_random_user_data, try_to_delete_user, create_user, try_to_create_order
+from helpers.helpers_on_get_ingredients import create_ingredient_list_for_burger
 
 
 class TestCreateOrder:
