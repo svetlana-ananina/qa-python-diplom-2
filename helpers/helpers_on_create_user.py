@@ -1,4 +1,5 @@
 import allure
+import pytest
 import random
 import string
 
@@ -6,7 +7,7 @@ from helpers.helpers_on_check_response import check_status_code, _print_info, ch
     check_key_in_body, check_ingredients
 from helpers.helpers_on_requests import request_on_create_user, request_on_delete_user, request_on_login_user, \
     request_on_logout_user, request_on_update_user, request_on_reset_password, request_on_get_ingredients, \
-    request_on_create_order
+    request_on_create_order, request_on_get_user_orders
 
 from data import STATUS_CODES as CODE
 from data import RESPONSE_KEYS as KEYS
@@ -209,7 +210,19 @@ def get_ingredient_list():
     return buns_list, fillings_list, sauces_list
 
 
-# вспомогательные методы для создания заказа
+@allure.step('Создаем список ингредиентов для бургера')
+def create_ingredient_list_for_burger(buns_list, fillings_list, sauces_list):
+    ingredient_list = [
+            (buns_list[0])[KEYS.ID_KEY],
+            (fillings_list[0])[KEYS.ID_KEY],
+            (sauces_list[0])[KEYS.ID_KEY]
+        ]
+    _print_info(f'ingredient_list={ingredient_list}')
+
+    return ingredient_list
+
+
+# Вспомогательные методы для работы с заказами
 @allure.step('Создаем заказ')
 def try_to_create_order(ingredient_list, auth_token=None):      # ingredient_list - список _id ингредиентов
     _print_info('\nСоздаем заказ ...')
@@ -227,31 +240,34 @@ def try_to_create_order(ingredient_list, auth_token=None):      # ingredient_lis
     return response
 
 
-@allure.step('Создаем список ингредиентов для бургера')
-def create_ingredient_list_for_burger(buns_list, fillings_list, sauces_list):
-    ingredient_list = [
-            (buns_list[0])[KEYS.ID_KEY],
-            (fillings_list[0])[KEYS.ID_KEY],
-            (sauces_list[0])[KEYS.ID_KEY]
-        ]
-    _print_info(f'ingredient_list={ingredient_list}')
-
-    return ingredient_list
-
-
-def create_order(ingredient_list=None, auth_token=None):
-    if ingredient_list is None:
-        buns_list, fillings_list, sauces_list = get_ingredient_list()
-        ingredient_list = create_ingredient_list_for_burger(buns_list, fillings_list, sauces_list)
-
+def create_order(ingredient_list, auth_token=None):
     # создаем заказ
     response = try_to_create_order(ingredient_list, auth_token)
     # проверяем что получен код ответа 200
     check_status_code(response, CODE.OK)
     # проверяем в теле ответа: { "success" = True }
     received_body = check_success(response, True)
+    # Получаем данные заказа - name, number
+    order_name = check_key_in_body(received_body, KEYS.NAME_KEY)
+    received_order_data = check_key_in_body(received_body, KEYS.ORDER_KEY)
+    order_number = check_key_in_body(received_order_data, KEYS.NUMBER_KEY)
 
-    return received_body
+    return order_number, order_name
 
 
+# Вспомогательные методы для работы с заказами
+@allure.step('Получаем заказы пользователя')
+def try_to_get_user_orders(auth_token=None):
+    _print_info('\nПолучаем заказы пользователя ...')
+    if auth_token is not None:
+        headers = {
+            KEYS.AUTH_TOKEN_KEY: auth_token,    #"Autorization": auth_token
+        }
+    else:
+        headers = None
+    response = request_on_get_user_orders(headers)
+    return response
+
+
+#
 

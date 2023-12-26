@@ -1,7 +1,8 @@
 import requests
 import allure
 
-from data import SERVER_URL, LOGIN_USER, LOGOUT_USER, UPDATE_USER, RESET_PASSWORD, GET_INGREDIENTS, CREATE_ORDER
+from data import SERVER_URL, LOGIN_USER, LOGOUT_USER, UPDATE_USER, RESET_PASSWORD, GET_INGREDIENTS, CREATE_ORDER, \
+    GET_USER_ORDERS
 from data import CREATE_USER, DELETE_USER
 from data import _to_print
 from helpers.helpers_on_check_response import _print_info, _print_response
@@ -85,4 +86,12 @@ def request_on_create_order(payload,  headers=None):
     _print_response(response)
     return response
 
+
+@allure.step('Отправляем API-запрос на получение заказов пользователя')
+def request_on_get_user_orders(headers=None):
+    request_url = f'{SERVER_URL}{GET_USER_ORDERS}'
+    _print_info(f'\nОтправляем запрос на получение заказов пользователя: GET url="{request_url}"\nheaders="{headers}"')
+    response = requests.get(f'{request_url}', headers=headers)
+    _print_response(response)
+    return response
 

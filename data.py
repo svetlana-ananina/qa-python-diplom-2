@@ -53,6 +53,10 @@ class RESPONSE_KEYS:
 
     ORDER_KEY       = 'order'
     NUMBER_KEY      = 'number'
+    ORDERS_KEY      = 'orders'
+    TOTAL_KEY       = 'total'
+    TOTAL_TODAY_KEY = 'totalToday'
+
 
 
     # поля для отправки запроса

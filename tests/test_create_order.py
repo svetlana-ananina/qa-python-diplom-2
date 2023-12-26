@@ -15,12 +15,6 @@ from helpers.helpers_on_create_user import generate_random_user_data, try_to_del
 
 class TestCreateOrder:
 
-    def __init__(self):
-        self.to_teardown = False        # Выполнять удаление созданного пользователя
-        self.auth_token = None
-        self.refresh_token = None
-
-
     def setup(self):
         """
         Инициализируем данные пользователя для удаления после завершения работы
@@ -28,6 +22,9 @@ class TestCreateOrder:
         _print_info(f'\nSetup "TestCreateOrder" ...')
         # Получаем список ингредиентов
         self.buns_list, self.fillings_list, self.sauces_list = get_ingredient_list()
+        self.to_teardown = False        # Выполнять удаление созданного пользователя
+        self.auth_token = None
+        self.refresh_token = None
 
     def teardown(self):
         """
