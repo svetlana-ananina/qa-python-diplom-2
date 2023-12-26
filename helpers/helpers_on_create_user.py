@@ -3,7 +3,7 @@ import random
 import string
 
 from helpers.helpers_on_check_response import check_status_code, _print_info, check_new_user_data, check_success, \
-    check_key_in_body
+    check_key_in_body, check_ingredients
 from helpers.helpers_on_requests import request_on_create_user, request_on_delete_user, request_on_login_user, \
     request_on_logout_user, request_on_update_user, request_on_reset_password, request_on_get_ingredients, \
     request_on_create_order
@@ -142,14 +142,16 @@ def try_to_reset_password(new_password, token):
     return response
 
 
+# Вспомогательные методы для работы с ингредиентами
 @allure.step('Получаем данные об ингредиентах')
 def try_to_get_ingredients():
+    # Отправляем запрос на получение списка ингредиентов
     _print_info('\nПолучаем данные об ингредиентах ...')
     response = request_on_get_ingredients()
     return response
 
 
-@allure.step('Получаем данные об ингредиентах')
+# Получаем данные об ингредиентах от API
 def get_ingredients():
     response = try_to_get_ingredients()
     # проверяем что получен код ответа 200
@@ -194,23 +196,62 @@ def get_sauces_list(ingredients):
     return sauces_list
 
 
+@allure.step('Получаем список ингредиентов')
+def get_ingredient_list():
+    # Получаем список ингредиентов - отправляем запрос к API
+    ingredients = get_ingredients()
+    # получаем списки булок, начинок и соусов
+    buns_list = get_buns_list(ingredients)
+    fillings_list = get_fillings_list(ingredients)
+    sauces_list = get_sauces_list(ingredients)
+    # проверяем что списки ингредиентов не пусты
+    check_ingredients(buns_list, fillings_list, sauces_list)
+    return buns_list, fillings_list, sauces_list
+
+
+# вспомогательные методы для создания заказа
 @allure.step('Создаем заказ')
 def try_to_create_order(ingredient_list, auth_token=None):      # ingredient_list - список _id ингредиентов
     _print_info('\nСоздаем заказ ...')
     if auth_token is not None:
         headers = {
-            #"Autorization": auth_token,
-            KEYS.AUTH_TOKEN_KEY: auth_token,
+            KEYS.AUTH_TOKEN_KEY: auth_token,    #"Autorization": auth_token
         }
     else:
         headers = None
 
-    #payload = '{' + f'"{KEYS.INGREDIENTS}":{ingredient_list}' + '}'
     payload = {
-        #"ingredients": ingredient_list,
-        KEYS.INGREDIENTS: ingredient_list,
+        KEYS.INGREDIENTS: ingredient_list,      #"ingredients": ingredient_list,
     }
     response = request_on_create_order(payload, headers)
     return response
+
+
+@allure.step('Создаем список ингредиентов для бургера')
+def create_ingredient_list_for_burger(buns_list, fillings_list, sauces_list):
+    ingredient_list = [
+            (buns_list[0])[KEYS.ID_KEY],
+            (fillings_list[0])[KEYS.ID_KEY],
+            (sauces_list[0])[KEYS.ID_KEY]
+        ]
+    _print_info(f'ingredient_list={ingredient_list}')
+
+    return ingredient_list
+
+
+def create_order(ingredient_list=None, auth_token=None):
+    if ingredient_list is None:
+        buns_list, fillings_list, sauces_list = get_ingredient_list()
+        ingredient_list = create_ingredient_list_for_burger(buns_list, fillings_list, sauces_list)
+
+    # создаем заказ
+    response = try_to_create_order(ingredient_list, auth_token)
+    # проверяем что получен код ответа 200
+    check_status_code(response, CODE.OK)
+    # проверяем в теле ответа: { "success" = True }
+    received_body = check_success(response, True)
+
+    return received_body
+
 
 

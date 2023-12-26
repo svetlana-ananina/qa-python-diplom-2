@@ -1,6 +1,6 @@
 import allure
 
-from data import STATUS_CODES as code, _to_print, ACCESS_TOKEN_PREFIX
+from data import STATUS_CODES as CODE, _to_print, ACCESS_TOKEN_PREFIX
 from data import RESPONSE_KEYS as KEYS
 
 
@@ -112,8 +112,15 @@ def check_new_user_data(received_body, user_data):
 
 #
 # Проверка полученных данных после создания заказа
-@allure.step('Проверяем полученные данные пользователя - поле "user"')
-def check_order_data(received_body):
+@allure.step('Проверяем полученные данные заказа')
+#def check_order_data(received_body):
+def check_order_data(response):
+    # проверяем что получен код ответа 200
+    check_status_code(response, CODE.OK)
+    # проверяем в теле ответа: { "success" = True }
+    received_body = check_success(response, True)
+    # проверяем полученные данные заказа в теле ответа
+
     # проверяем наличие в ответе ключа "name" и получаем его значение - строка
     order_name = check_key_in_body(received_body, KEYS.NAME_KEY)
     assert type(order_name) is str, f'Получено неверное значение ключа "{KEYS.NAME_KEY}": ожидалось - строка, получено значение {order_name} тип {type(order_name)}'
@@ -127,5 +134,11 @@ def check_order_data(received_body):
     assert str(order_number).isdigit(), f'Получено неверное значение ключа "{KEYS.NUMBER_KEY}": ожидалось - число, получено значение {order_number} тип {type(order_number)}'
 
     return order_number, order_name
+
+
+@allure.step('Проверяем полученные списки ингредиентов')
+def check_ingredients(buns_list, fillings_list, sauces_list):
+    assert len(buns_list) != 0 and len(fillings_list) != 0 and len(sauces_list) != 0, \
+        f'TestCreateOrder ошибка - в списке ингредиентов нет по крайней мере одного из необходимых типов (булки, начинки, соусы)'
 
 

@@ -65,6 +65,7 @@ ACCESS_TOKEN_PREFIX = "Bearer "
 
 
 class RESPONSE_MESSAGES:
+
     LOGOUT                  = 'Successful logout'
     USER_DELETED            = 'User successfully removed'
     PASSWORD_IS_RESET       = 'Password successfully reset'
