@@ -6,22 +6,39 @@ from data import RESPONSE_KEYS as KEYS
 from data import RESPONSE_MESSAGES as text
 
 from helpers.helpers_on_check_response import check_status_code, check_success, check_user_data, check_message, \
-    check_order_data, check_ingredients
+    check_order_data, check_ingredients, check_not_success_error_message
 from helpers.helpers_on_check_response import _print_info
 from helpers.helpers_on_create_user import generate_random_user_data, try_to_delete_user, create_user, try_to_create_order
-from helpers.helpers_on_get_ingredients import create_ingredient_list_for_burger
+from helpers.helpers_on_get_ingredients import create_ingredient_list_for_burger, get_ingredients, get_buns_list, \
+    get_fillings_list, get_sauces_list
 
 
 class TestCreateOrder:
+
+    ingredients = None
+    buns_list = None
+    fillings_list = None
+    sauces_list = None
+
+    @classmethod
+    def setup_class(cls):
+        """
+        Инициализируем списки ингредиентов
+        """
+        _print_info(f'\nSetup_class "TestCreateOrder" ...')
+        # cls.ingredients = get_ingredients_from_api
+        cls.ingredients = get_ingredients()
+        cls.buns_list = get_buns_list(cls.ingredients)
+        cls.fillings_list = get_fillings_list(cls.ingredients)
+        cls.sauces_list = get_sauces_list(cls.ingredients)
+        check_ingredients(cls.buns_list, cls.fillings_list, cls.sauces_list)
 
     def setup(self):
         """
         Инициализируем данные пользователя для удаления после завершения работы
         """
         _print_info(f'\nSetup "TestCreateOrder" ...')
-        # Получаем список ингредиентов
-        self.buns_list, self.fillings_list, self.sauces_list = get_ingredient_list()
-        self.to_teardown = False        # Выполнять удаление созданного пользователя
+        self.to_teardown = False
         self.auth_token = None
         self.refresh_token = None
 
@@ -40,6 +57,19 @@ class TestCreateOrder:
         self.auth_token = auth_token
         self.refresh_token = refresh_token
 
+    @classmethod
+    def create_burger(cls):
+        """
+        Собираем бургер для заказа
+        """
+        ingredients_list = [
+            (cls.buns_list[0])[KEYS.ID_KEY],
+            (cls.fillings_list[0])[KEYS.ID_KEY],
+            (cls.sauces_list[0])[KEYS.ID_KEY]
+        ]
+        _print_info(f'\ningredient_list={ingredients_list}')
+        return ingredients_list
+
     @allure.title('Проверка создания заказа для авторизованного пользователя')
     def test_create_order_authorized_user(self):
         # отправляем запрос на создание пользователя
@@ -47,7 +77,8 @@ class TestCreateOrder:
         # сохраняем полученные данные пользователя
         self.init_teardown(auth_token, refresh_token)
         # составляем список ингредиентов для бургера
-        ingredients_id_list = create_ingredient_list_for_burger(self.buns_list, self.fillings_list, self.sauces_list)
+        #ingredients_id_list = create_ingredient_list_for_burger(self.buns_list, self.fillings_list, self.sauces_list)
+        ingredients_id_list = self.create_burger()
         _print_info(f'ingredients_id_list={ingredients_id_list}')
 
         # отправляем запрос на создание заказа
@@ -66,7 +97,8 @@ class TestCreateOrder:
         # сохраняем полученные данные пользователя
         self.init_teardown(auth_token, refresh_token)
         # составляем список ингредиентов для бургера
-        ingredients_id_list = create_ingredient_list_for_burger(self.buns_list, self.fillings_list, self.sauces_list)
+        #ingredients_id_list = create_ingredient_list_for_burger(self.buns_list, self.fillings_list, self.sauces_list)
+        ingredients_id_list = self.create_burger()
         _print_info(f'ingredients_id_list={ingredients_id_list}')
 
         # отправляем запрос на создание заказа
@@ -83,7 +115,8 @@ class TestCreateOrder:
     @allure.title('Проверка создания заказа без авторизации')
     def test_create_order_unauthorized(self):
         # составляем список ингредиентов для бургера
-        ingredients_id_list = create_ingredient_list_for_burger(self.buns_list, self.fillings_list, self.sauces_list)
+        #ingredients_id_list = create_ingredient_list_for_burger(self.buns_list, self.fillings_list, self.sauces_list)
+        ingredients_id_list = self.create_burger()
         _print_info(f'ingredients_id_list={ingredients_id_list}')
 
         # отправляем запрос на создание заказа
@@ -104,11 +137,10 @@ class TestCreateOrder:
         response = try_to_create_order(ingredients_id_list)
 
         # проверяем что получен код ответа 400
-        check_status_code(response, CODE.BAD_REQUEST)
         # проверяем в теле ответа: { "success" = False }
-        received_body = check_success(response, False)
         # проверяем сообщение в теле ответа: { "message" = "You should be authorised" }
-        check_message(received_body, text.NO_INGREDIENTS)
+        check_not_success_error_message(response, CODE.BAD_REQUEST, text.NO_INGREDIENTS)
+
 
 
     @allure.title('Проверка создания заказа с неверным хешем ингредиента')
