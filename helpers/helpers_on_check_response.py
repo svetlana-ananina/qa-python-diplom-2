@@ -22,14 +22,14 @@ def _print_info(info_str):
 
 #
 # Вспомогательные методы проверки ответа на запрос к API
-#@allure.step('Проверяем наличие ключа в ответе')
+@allure.step('Проверяем наличие ключа в ответе')
 def check_key_in_body(response_body, key):
     # проверяем что в ответе есть ключ key
     assert key in response_body, f'В ответе отсутствует ключ "{key}", получен ответ: "{response_body}"'
     return response_body[key]
 
 
-#@allure.step('Проверяем значение ключа в ответе')
+@allure.step('Проверяем значение ключа в ответе')
 def check_key_and_value_in_body(response_body, key, value):
     # проверяем наличие ключа в ответе
     assert key in response_body, f'В ответе отсутствует ключ "{key}", получен ответ: "{response_body}"'
@@ -58,6 +58,7 @@ def check_success(response, expected_value):
     assert received_value == expected_value, f'Получено неверное значение поля "{KEYS.SUCCESS_KEY}": ожидалось "{expected_value}", получено "{received_value}"'
     return received_body
 
+@allure.step('Проверяем, что запрос выполнен успешно')
 def check_success_ok(response):
     # проверяем что получен код ответа 200
     check_status_code(response, CODE.OK)
@@ -66,6 +67,7 @@ def check_success_ok(response):
     return received_body
 
 
+@allure.step('Проверяем код ошибки и сообщение об ошибке')
 def check_not_success_error_message(response, code, message):
     # проверяем что получен код ответа = code
     check_status_code(response, code)

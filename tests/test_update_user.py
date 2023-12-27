@@ -5,7 +5,8 @@ from data import STATUS_CODES as CODE
 from data import RESPONSE_KEYS as KEYS
 from data import RESPONSE_MESSAGES as text
 
-from helpers.helpers_on_check_response import check_status_code, check_success, check_user_data, check_message
+from helpers.helpers_on_check_response import check_status_code, check_success, check_user_data, check_message, \
+    check_success_ok, check_not_success_error_message
 from helpers.helpers_on_check_response import _print_info
 from helpers.helpers_on_create_user import generate_random_user_data, try_to_delete_user, create_user, \
     try_to_update_user, generate_random_user_name, generate_random_user_login, generate_random_user_password
@@ -32,7 +33,9 @@ class TestUpdateUser:
             try_to_delete_user(self.auth_token)
 
     def init_teardown(self, auth_token, refresh_token):
-        # сохраняем полученные данные пользователя
+        """
+        сохраняем полученные данные пользователя
+        """
         self.to_teardown = True
         self.auth_token = auth_token
         self.refresh_token = refresh_token
@@ -69,10 +72,9 @@ class TestUpdateUser:
         # отправляем запрос на изменение данных пользователя
         response = try_to_update_user(payload, auth_token)
 
-        # проверяем что получен код ответа 200
-        check_status_code(response, CODE.OK)
-        # проверяем в теле ответа: { "success" = True }
-        received_body = check_success(response, True)
+        # Проверяем, что получен статус-код 200 OK и в теле ответа "success" = True
+        # и получаем тело ответа
+        received_body = check_success_ok(response)
         # проверяем полученные данные пользователя в теле ответа - поле "user"
         check_user_data(received_body, new_user_data)
 
@@ -109,9 +111,7 @@ class TestUpdateUser:
         response = try_to_update_user(payload)
 
         # проверяем что получен код ответа 401
-        check_status_code(response, CODE.UNAUTHORIZED)
         # проверяем в теле ответа: { "success" = False }
-        received_body = check_success(response, False)
         # проверяем сообщение в теле ответа: { "message" = "You should be authorised" }
-        check_message(received_body, text.UNAUTHORIZED)
+        check_not_success_error_message(response, CODE.UNAUTHORIZED, text.UNAUTHORIZED)
 

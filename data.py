@@ -81,14 +81,6 @@ class RESPONSE_MESSAGES:
     EMAIL_ALREADY_EXISTS    = 'User with such email already exists'
     NO_INGREDIENTS          = 'Ingredient ids must be provided'
 
-    #OK_KEY      = 'ok'
-    #ID_KEY      = 'id'
-    #LOGIN       = 'login'
-    #PASSWORD    = 'password'
-    #TRACK       = 'track'
-    #ORDERS      = 'orders'
-    #ORDER       = 'order'
-
 
 INGREDIENTS_LIST = [
         {

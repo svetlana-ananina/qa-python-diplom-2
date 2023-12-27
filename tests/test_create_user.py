@@ -5,7 +5,7 @@ from data import STATUS_CODES as CODE
 from data import RESPONSE_KEYS as KEYS
 from data import RESPONSE_MESSAGES as text
 
-from helpers.helpers_on_check_response import _print_info, check_status_code, check_success, check_message
+from helpers.helpers_on_check_response import _print_info, check_not_success_error_message
 from helpers.helpers_on_create_user import generate_random_user_data, create_and_check_user, try_to_create_user, \
     try_to_delete_user, create_user
 
@@ -32,7 +32,9 @@ class TestCreateUser:
             try_to_delete_user(self.auth_token)
 
     def init_teardown(self, user_data, auth_token, refresh_token):
-        # сохраняем полученные данные пользователя
+        """
+        сохраняем полученные данные пользователя
+        """
         self.user_data = user_data.copy()
         self.to_teardown = True
         self.auth_token = auth_token
@@ -62,12 +64,9 @@ class TestCreateUser:
         response = try_to_create_user(user_data)
 
         # проверяем что получен код ответа 403
-        check_status_code(response, CODE.FORBIDDEN)
         # проверяем в теле ответа: { "success" = False }
-        received_body = check_success(response, False)
         # проверяем сообщение в теле ответа: { "message" = "User already exists" }
-        check_message(received_body, text.USER_ALREADY_EXISTS)
-
+        check_not_success_error_message(response, CODE.FORBIDDEN, text.USER_ALREADY_EXISTS)
 
     @allure.title('Проверка создания пользователя - не заполнено одно из полей')
     @pytest.mark.parametrize('field', [         # незаполненное поле
@@ -85,10 +84,7 @@ class TestCreateUser:
         response = try_to_create_user(user_data)
 
         # проверяем что получен код ответа 403
-        check_status_code(response, CODE.FORBIDDEN)
         # проверяем в теле ответа: { "success" = False }
-        received_body = check_success(response, False)
-        # проверяем сообщение в теле ответа: { "message" = "User already exists" }
-        check_message(received_body, text.MISSING_REQUIRED_FIELD)
-
+        # проверяем сообщение в теле ответа: { "message" = "Email, password and name are required fields" }
+        check_not_success_error_message(response, CODE.FORBIDDEN, text.MISSING_REQUIRED_FIELD)
 

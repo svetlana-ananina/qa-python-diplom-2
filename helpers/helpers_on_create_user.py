@@ -3,16 +3,13 @@ import pytest
 import random
 import string
 
-from conftest import get_ingredients_from_api
-from helpers.helpers_on_check_response import check_status_code, _print_info, check_new_user_data, check_success, \
-    check_key_in_body, check_ingredients
+from helpers.helpers_on_check_response import check_status_code, _print_info, check_new_user_data, check_success, check_key_in_body
 from helpers.helpers_on_requests import request_on_create_user, request_on_delete_user, request_on_login_user, \
-    request_on_logout_user, request_on_update_user, request_on_reset_password, request_on_get_ingredients, \
-    request_on_create_order, request_on_get_user_orders
+    request_on_logout_user, request_on_update_user, request_on_create_order, request_on_get_user_orders
 
 from data import STATUS_CODES as CODE
 from data import RESPONSE_KEYS as KEYS
-from data import _to_print
+
 
 # Вспомогательные функции
 def generate_random_string(length):
@@ -58,6 +55,7 @@ def generate_random_user_password():
 
 
 # метод создания нового пользователя и проверки полученного ответа
+@allure.step('Создаем нового пользователя')
 def create_and_check_user(user_data=None):
     # генерируем уникальные данные нового пользователя
     if user_data is None:
@@ -65,7 +63,6 @@ def create_and_check_user(user_data=None):
     # отправляем запрос на создание пользователя
     response = try_to_create_user(user_data)
     # проверяем что получен код ответа 200
-    check_status_code(response, CODE.OK)
     # проверяем в теле ответа: { "success" = True }
     received_body = check_success(response, True)
     # проверяем полученные данные пользователя и возвращаем 2 токена
@@ -74,6 +71,7 @@ def create_and_check_user(user_data=None):
 
 
 # вспомогательный метод создания нового пользователя для других тестов
+@allure.step('Создаем нового пользователя')
 def create_user(user_data=None):
     # генерируем уникальные данные нового пользователя
     if user_data is None:
@@ -82,16 +80,14 @@ def create_user(user_data=None):
     response = try_to_create_user(user_data)
     # проверяем что получен код ответа 200
     check_status_code(response, CODE.OK)
-    # проверяем полученные данные и возвращаем 2 токена
-    # auth_token, refresh_token = check_user_data(response, email, name)
+    # получаем токены пользователя
     received_body = response.json()
     auth_token = received_body[KEYS.ACCESS_TOKEN]
     refresh_token = received_body[KEYS.REFRESH_TOKEN]
-
     return auth_token, refresh_token
 
 
-@allure.step('Создаем нового пользователя')
+@allure.step('Отправляем запрос на создание нового пользователя')
 def try_to_create_user(user_data):
     _print_info('\nСоздаем/регистрируем нового пользователя ...')
     response = request_on_create_user(user_data)
@@ -133,19 +129,8 @@ def try_to_logout_user(token):
     return response
 
 
-@allure.step('Устанавливаем новый пароль пользователя')
-def try_to_reset_password(new_password, token):
-    _print_info('\nУстанавливаем новый пароль пользователя ...')
-    payload = {
-        KEYS.PASSWORD_KEY: new_password,
-        KEYS.TOKEN_KEY: token
-    }
-    response = request_on_reset_password(payload)
-    return response
-
-
 # Вспомогательные методы для работы с заказами
-@allure.step('Создаем заказ')
+@allure.step('Отправляем запрос на создание заказа')
 def try_to_create_order(ingredient_list, auth_token=None):      # ingredient_list - список _id ингредиентов
     _print_info('\nСоздаем заказ ...')
     if auth_token is not None:
@@ -162,6 +147,7 @@ def try_to_create_order(ingredient_list, auth_token=None):      # ingredient_lis
     return response
 
 
+@allure.step('Создаем заказ и проверяем полученные в ответе данные')
 def create_order(ingredient_list, auth_token=None):
     # создаем заказ
     response = try_to_create_order(ingredient_list, auth_token)
@@ -178,7 +164,7 @@ def create_order(ingredient_list, auth_token=None):
 
 
 # Вспомогательные методы для работы с заказами
-@allure.step('Получаем заказы пользователя')
+@allure.step('Отправляем запрос на получение заказов пользователя')
 def try_to_get_user_orders(auth_token=None):
     _print_info('\nПолучаем заказы пользователя ...')
     if auth_token is not None:
@@ -189,7 +175,4 @@ def try_to_get_user_orders(auth_token=None):
         headers = None
     response = request_on_get_user_orders(headers)
     return response
-
-
-#
 

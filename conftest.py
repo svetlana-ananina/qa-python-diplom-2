@@ -9,9 +9,6 @@ from helpers.helpers_on_get_ingredients import try_to_get_ingredients, get_buns_
 from helpers.helpers_on_requests import request_on_get_ingredients
 
 
-#from helpers.helpers_on_create_user import try_to_get_ingredients
-
-
 # Получаем данные об ингредиентах от API
 @allure.title('Получаем данные об ингредиентах')
 @pytest.fixture(name='get_ingredients_from_api',scope="session")

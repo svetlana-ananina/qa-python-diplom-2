@@ -52,7 +52,9 @@ class TestCreateOrder:
             try_to_delete_user(self.auth_token)
 
     def init_teardown(self, auth_token, refresh_token):
-        # сохраняем полученные данные пользователя
+        """
+        сохраняем полученные данные пользователя
+        """
         self.to_teardown = True
         self.auth_token = auth_token
         self.refresh_token = refresh_token

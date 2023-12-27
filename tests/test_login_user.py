@@ -5,7 +5,8 @@ from data import STATUS_CODES as CODE
 from data import RESPONSE_KEYS as KEYS
 from data import RESPONSE_MESSAGES as text
 
-from helpers.helpers_on_check_response import check_status_code, check_success, check_message, check_new_user_data
+from helpers.helpers_on_check_response import check_status_code, check_success, check_message, check_new_user_data, \
+    check_not_success_error_message
 from helpers.helpers_on_check_response import _print_info
 from helpers.helpers_on_create_user import generate_random_user_data, try_to_delete_user, create_user, try_to_login_user
 
@@ -32,7 +33,9 @@ class TestLoginUser:
             try_to_delete_user(self.auth_token)
 
     def init_teardown(self, user_data, auth_token, refresh_token):
-        # сохраняем полученные данные пользователя
+        """
+        сохраняем полученные данные пользователя
+        """
         self.user_data = user_data.copy()
         self.to_teardown = True
         self.auth_token = auth_token
@@ -77,10 +80,8 @@ class TestLoginUser:
         response = try_to_login_user(new_user_data[KEYS.EMAIL_KEY], new_user_data[KEYS.PASSWORD_KEY])
 
         # проверяем что получен код ответа 401
-        check_status_code(response, CODE.UNAUTHORIZED)
         # проверяем в теле ответа: { "success" = False }
-        received_body = check_success(response, False)
         # проверяем сообщение в теле ответа: { "message" = "email or password are incorrect" }
-        check_message(received_body, text.INVALID_LOGIN)
+        check_not_success_error_message(response, CODE.UNAUTHORIZED, text.INVALID_LOGIN)
 
 
