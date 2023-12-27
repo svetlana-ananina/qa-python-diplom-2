@@ -2,13 +2,13 @@ import pytest
 import allure
 
 from data import RESPONSE_KEYS as KEYS
-from helpers.helpers_on_check_response import _print_info, check_ingredients
+from helpers.helpers_on_check_response import _print_info,check_ingredients_list
 from helpers.helpers_on_requests import request_on_get_ingredients
 
 
+#
 # Вспомогательные методы для работы с ингредиентами
-# Получаем данные об ингредиентах от API
-@allure.step('Получаем данные об ингредиентах')
+@allure.step('Отправляем запрос на получение списка ингредиентов от API')
 def try_to_get_ingredients():
     # Отправляем запрос на получение списка ингредиентов
     _print_info('\nПолучаем данные об ингредиентах ...')
@@ -47,7 +47,7 @@ def get_sauces_list(ingredients):
     return sauces_list
 
 
-allure.step('Создаем список ингредиентов для бургера')
+@allure.step('Создаем список ингредиентов для бургера')
 def create_ingredient_list_for_burger(buns_list, fillings_list, sauces_list):
     ingredient_list = [
             (buns_list[0])[KEYS.ID_KEY],
@@ -57,6 +57,15 @@ def create_ingredient_list_for_burger(buns_list, fillings_list, sauces_list):
     _print_info(f'ingredient_list={ingredient_list}')
 
     return ingredient_list
+
+
+# Получаем данные об ингредиентах от API
+@allure.step('Получаем данные об ингредиентах')
+def get_ingredients():
+    response = try_to_get_ingredients()
+    # проверяем что получен код ответа 200
+    ingredients = check_ingredients_list(response)
+    return ingredients
 
 
 

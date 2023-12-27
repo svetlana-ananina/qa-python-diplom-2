@@ -58,6 +58,23 @@ def check_success(response, expected_value):
     assert received_value == expected_value, f'Получено неверное значение поля "{KEYS.SUCCESS_KEY}": ожидалось "{expected_value}", получено "{received_value}"'
     return received_body
 
+def check_success_ok(response):
+    # проверяем что получен код ответа 200
+    check_status_code(response, CODE.OK)
+    # проверяем в теле ответа: { "success" = True }
+    received_body = check_success(response, True)
+    return received_body
+
+
+def check_not_success_error_message(response, code, message):
+    # проверяем что получен код ответа = code
+    check_status_code(response, code)
+    # проверяем в теле ответа: { "success" = False }
+    received_body = check_success(response, False)
+    # проверяем сообщение в теле ответа: { "message" = message }
+    check_message(received_body, message)
+    return received_body
+
 
 @allure.step('Проверяем сообщение в ответе')
 def check_message(received_body, expected_message):
@@ -112,7 +129,7 @@ def check_new_user_data(received_body, user_data):
 
 #
 # Проверка полученных данных после создания заказа
-@allure.step('Проверяем полученные данные заказа')
+@allure.step('Проверяем полученный ответ после запроса создания заказа')
 #def check_order_data(received_body):
 def check_order_data(response):
     # проверяем что получен код ответа 200
@@ -136,12 +153,13 @@ def check_order_data(response):
     return order_number, order_name
 
 
-@allure.step('Проверяем полученные списки ингредиентов')
+@allure.step('Проверяем списки ингредиентов по типам - булки, начинки, соусы')
 def check_ingredients(buns_list, fillings_list, sauces_list):
     assert len(buns_list) != 0 and len(fillings_list) != 0 and len(sauces_list) != 0, \
         f'TestCreateOrder ошибка - в списке ингредиентов нет по крайней мере одного из необходимых типов (булки, начинки, соусы)'
 
 
+@allure.step('Проверяем полученный ответ на запрос списка ингредиентов')
 def check_ingredients_list(response):
     # проверяем что получен код ответа 200
     check_status_code(response, CODE.OK)
@@ -152,4 +170,42 @@ def check_ingredients_list(response):
     # проверяем что поле data содержит список и возвращаем его
     assert type(ingredients) is list and len(ingredients) > 0
     return ingredients
+
+#
+# Проверка полученного ответа на запрос получения заказов пользователя
+@allure.step('Проверяем в полученном ответе информацию о заказе')
+def check_received_order_data(received_order_data, order_number, order_name, ingredients_list):
+    # проверяем полученные данные заказа
+    assert type(received_order_data) is dict
+    # проверяем что поле "_id" строка
+    received_order_id = check_key_in_body(received_order_data, KEYS.ID_KEY)
+    assert type(received_order_id) is str
+    # проверяем что поле "number" = order_number
+    received_order_number = check_key_and_value_in_body(received_order_data, KEYS.NUMBER_KEY, order_number)
+    # проверяем что поле "name" = order_name
+    received_order_number = check_key_and_value_in_body(received_order_data, KEYS.NAME_KEY, order_name)
+    # проверяем поле "ingredients"
+    received_ingredients_list = check_key_in_body(received_order_data, KEYS.INGREDIENTS)
+    assert type(received_ingredients_list) is list
+    # проверяем что количество ингредиентов совпадает с заданным
+    assert len(received_ingredients_list) == len(ingredients_list)
+
+
+@allure.step('Проверяем в полученном ответе поле "orders" - список заказов')
+def check_received_orders_list(received_body, amount):
+    # проверяем наличие в ответе ключа "orders" и получаем его значение - список
+    received_orders_list = check_key_in_body(received_body, KEYS.ORDERS_KEY)
+    assert type(received_orders_list) is list
+    # проверяем что количество заказов в списке = amount
+    assert len(received_orders_list) == amount
+    return received_orders_list
+
+
+@allure.step('Проверяем в полученном ответе поля "total" и "totalToday"')
+def check_received_orders_info(received_body, amount):
+    # проверяем поля "total" и "totalToday" в списке заказов "orders" (в теле ответа)
+    check_key_and_value_in_body(received_body, KEYS.TOTAL_KEY, amount)
+    check_key_and_value_in_body(received_body, KEYS.TOTAL_TODAY_KEY, amount)
+
+
 
