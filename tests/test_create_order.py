@@ -5,12 +5,10 @@ from data import STATUS_CODES as CODE
 from data import RESPONSE_KEYS as KEYS
 from data import RESPONSE_MESSAGES as text
 
-from helpers.helpers_on_check_response import check_status_code, check_success, check_user_data, check_message, \
-    check_order_data, check_ingredients, check_not_success_error_message
+from helpers.helpers_on_check_response import check_status_code, check_order_data, check_ingredients, check_not_success_error_message
 from helpers.helpers_on_check_response import _print_info
-from helpers.helpers_on_create_user import generate_random_user_data, try_to_delete_user, create_user, try_to_create_order
-from helpers.helpers_on_get_ingredients import create_ingredient_list_for_burger, get_ingredients, get_buns_list, \
-    get_fillings_list, get_sauces_list
+from helpers.helpers_on_create_user import try_to_delete_user, create_user, try_to_create_order
+from helpers.helpers_on_get_ingredients import get_ingredients, get_buns_list, get_fillings_list, get_sauces_list
 
 
 class TestCreateOrder:
