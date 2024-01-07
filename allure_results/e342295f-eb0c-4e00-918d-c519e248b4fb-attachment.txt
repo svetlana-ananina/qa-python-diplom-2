@@ -1,0 +1,23 @@
+
+Setup_method "TestGetUserOrders" ...
+
+Создаем/регистрируем нового пользователя ...
+
+Отправляем запрос на создание пользователя: POST url="https://stellarburgers.nomoreparties.site/api/auth/register"
+json="{'email': 'zpyjzkyqnt@mail.ru', 'password': 'yxrnfszsko', 'name': 'rmqdgqdskm'}"
+response="<Response [200]>", response.text="{"success":true,"user":{"email":"zpyjzkyqnt@mail.ru","name":"rmqdgqdskm"},"accessToken":"Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1OWFmMzJmOWVkMjgwMDAxYjNhMWE3MCIsImlhdCI6MTcwNDY1MzYxNSwiZXhwIjoxNzA0NjU0ODE1fQ.3kPLr2cu9wx24j13mJS66KFVsoZT-NsZW8xy9A-TzWc","refreshToken":"1da1686200a1a863fbbc50500ac77ee19026ea79194b810dc3d330a9488b28988acdf8480020736d"}"
+
+Получаем заказы пользователя ...
+
+Отправляем запрос на получение заказов пользователя: GET url="https://stellarburgers.nomoreparties.site/api/orders"
+headers="{'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1OWFmMzJmOWVkMjgwMDAxYjNhMWE3MCIsImlhdCI6MTcwNDY1MzYxNSwiZXhwIjoxNzA0NjU0ODE1fQ.3kPLr2cu9wx24j13mJS66KFVsoZT-NsZW8xy9A-TzWc'}"
+response="<Response [200]>", response.text="{"success":true,"orders":[],"total":34893,"totalToday":116}"
+
+Teardown_method "TestGetUserOrders" ...
+self.to_teardown=True
+
+Удаляем пользователя ...
+
+Отправляем запрос на удаление пользователя: DELETE url="https://stellarburgers.nomoreparties.site/api/auth/user"
+headers="{'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1OWFmMzJmOWVkMjgwMDAxYjNhMWE3MCIsImlhdCI6MTcwNDY1MzYxNSwiZXhwIjoxNzA0NjU0ODE1fQ.3kPLr2cu9wx24j13mJS66KFVsoZT-NsZW8xy9A-TzWc'}"
+response="<Response [202]>", response.text="{"success":true,"message":"User successfully removed"}"

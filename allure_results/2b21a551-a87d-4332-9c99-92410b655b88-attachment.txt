@@ -1,0 +1,23 @@
+
+Setup_method "TestLoginUser" ...
+
+Создаем/регистрируем нового пользователя ...
+
+Отправляем запрос на создание пользователя: POST url="https://stellarburgers.nomoreparties.site/api/auth/register"
+json="{'email': 'gpgotpmjuo@mail.ru', 'password': 'pwiokifqeb', 'name': 'abxsnsgtck'}"
+response="<Response [200]>", response.text="{"success":true,"user":{"email":"gpgotpmjuo@mail.ru","name":"abxsnsgtck"},"accessToken":"Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1OWFmMzM1OWVkMjgwMDAxYjNhMWE3NCIsImlhdCI6MTcwNDY1MzYyMSwiZXhwIjoxNzA0NjU0ODIxfQ.ChcQQJqpsqSeySMG-pgdhHtRnmhrmqiAYaaNl-40cHM","refreshToken":"d9a1e25ce79a0e4b1ab5ff3e05e56d8a7eefee1faf38a598e39ff3258e1d62dfd92f5b3f625eaaa5"}"
+
+Авторизация пользователя ...
+
+Отправляем запрос на авторизацию пользователя: POST url="https://stellarburgers.nomoreparties.site/api/auth/login"
+json="{'email': 'gpgotpmjuo@mail.ru', 'password': 'pwiokifqeb'}"
+response="<Response [200]>", response.text="{"success":true,"accessToken":"Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1OWFmMzM1OWVkMjgwMDAxYjNhMWE3NCIsImlhdCI6MTcwNDY1MzYyMiwiZXhwIjoxNzA0NjU0ODIyfQ.geZmVn1sRpGT5wpw5PgKAtlDuEMgiqcH_rS5ikUTHvE","refreshToken":"df159557d006da1c0a90dd6a2f506cef6a8fe7c021d9d55b34570a3ec8c78e7ac32423d1f72904d9","user":{"email":"gpgotpmjuo@mail.ru","name":"abxsnsgtck"}}"
+
+Teardown_method "TestLoginUser" ...
+self.to_teardown=True
+
+Удаляем пользователя ...
+
+Отправляем запрос на удаление пользователя: DELETE url="https://stellarburgers.nomoreparties.site/api/auth/user"
+headers="{'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1OWFmMzM1OWVkMjgwMDAxYjNhMWE3NCIsImlhdCI6MTcwNDY1MzYyMSwiZXhwIjoxNzA0NjU0ODIxfQ.ChcQQJqpsqSeySMG-pgdhHtRnmhrmqiAYaaNl-40cHM'}"
+response="<Response [202]>", response.text="{"success":true,"message":"User successfully removed"}"

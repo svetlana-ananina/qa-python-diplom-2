@@ -12,21 +12,21 @@ from helpers.helpers_on_create_user import generate_random_user_data, create_and
 
 class TestCreateUser:
 
-    def setup(self):
+    def setup_method(self):
         """
         Инициализируем данные пользователя для удаления после завершения работы
         """
-        _print_info(f'\nSetup "TestCreateUser" ...')
+        _print_info(f'\nsetup_method "TestCreateUser" ...')
         self.to_teardown = False        # Выполнять удаление созданного пользователя
         self.user_data = None
         self.auth_token = None
         self.refresh_token = None
 
-    def teardown(self):
+    def teardown_method(self):
         """
         Удаляем созданного пользователя
         """
-        _print_info(f'\nTeardown "TestCreateUser" ...')
+        _print_info(f'\nteardown_method "TestCreateUser" ...')
         _print_info(f'self.to_teardown={self.to_teardown}')
         if self.to_teardown:
             try_to_delete_user(self.auth_token)

@@ -31,20 +31,20 @@ class TestCreateOrder:
         cls.sauces_list = get_sauces_list(cls.ingredients)
         check_ingredients(cls.buns_list, cls.fillings_list, cls.sauces_list)
 
-    def setup(self):
+    def setup_method(self):
         """
         Инициализируем данные пользователя для удаления после завершения работы
         """
-        _print_info(f'\nSetup "TestCreateOrder" ...')
+        _print_info(f'\nsetup_method "TestCreateOrder" ...')
         self.to_teardown = False
         self.auth_token = None
         self.refresh_token = None
 
-    def teardown(self):
+    def teardown_method(self):
         """
         Удаляем созданного пользователя
         """
-        _print_info(f'\nTeardown "TestCreateOrder" ...')
+        _print_info(f'\nTeardown_method "TestCreateOrder" ...')
         _print_info(f'self.to_teardown={self.to_teardown}')
         if self.to_teardown:
             try_to_delete_user(self.auth_token)
