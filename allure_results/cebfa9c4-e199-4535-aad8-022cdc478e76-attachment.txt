@@ -1,0 +1,23 @@
+
+setup_method "TestCreateUser" ...
+
+Создаем/регистрируем нового пользователя ...
+
+Отправляем запрос на создание пользователя: POST url="https://stellarburgers.nomoreparties.site/api/auth/register"
+json="{'email': 'mmrutggbtl@mail.ru', 'password': 'jcrpnblamo', 'name': 'dhjyegvmrv'}"
+response="<Response [200]>", response.text="{"success":true,"user":{"email":"mmrutggbtl@mail.ru","name":"dhjyegvmrv"},"accessToken":"Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1OWFmMzIzOWVkMjgwMDAxYjNhMWE2YiIsImlhdCI6MTcwNDY1MzYwMywiZXhwIjoxNzA0NjU0ODAzfQ.UOWb-t9MSvtiwFtVTQPpeafrtQm__Kj8w4j4xp_Vsm0","refreshToken":"7277b6cb21b1804ebe57ef96c92d28d0be9279983fcb3e4535d71c4e7a07ec8853bdc6e9810906c7"}"
+
+Создаем/регистрируем нового пользователя ...
+
+Отправляем запрос на создание пользователя: POST url="https://stellarburgers.nomoreparties.site/api/auth/register"
+json="{'email': 'mmrutggbtl@mail.ru', 'password': 'jcrpnblamo', 'name': 'dhjyegvmrv'}"
+response="<Response [403]>", response.text="{"success":false,"message":"User already exists"}"
+
+teardown_method "TestCreateUser" ...
+self.to_teardown=True
+
+Удаляем пользователя ...
+
+Отправляем запрос на удаление пользователя: DELETE url="https://stellarburgers.nomoreparties.site/api/auth/user"
+headers="{'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1OWFmMzIzOWVkMjgwMDAxYjNhMWE2YiIsImlhdCI6MTcwNDY1MzYwMywiZXhwIjoxNzA0NjU0ODAzfQ.UOWb-t9MSvtiwFtVTQPpeafrtQm__Kj8w4j4xp_Vsm0'}"
+response="<Response [202]>", response.text="{"success":true,"message":"User successfully removed"}"

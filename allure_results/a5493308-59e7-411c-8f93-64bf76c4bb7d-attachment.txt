@@ -1,0 +1,24 @@
+
+Setup_method "TestUpdateUser" ...
+
+Создаем/регистрируем нового пользователя ...
+
+Отправляем запрос на создание пользователя: POST url="https://stellarburgers.nomoreparties.site/api/auth/register"
+json="{'email': 'bolzbjiiql@mail.ru', 'password': 'rqwnyhwjzb', 'name': 'yjwpwvuwxa'}"
+response="<Response [200]>", response.text="{"success":true,"user":{"email":"bolzbjiiql@mail.ru","name":"yjwpwvuwxa"},"accessToken":"Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1OWFmMzNmOWVkMjgwMDAxYjNhMWE3YiIsImlhdCI6MTcwNDY1MzYzMSwiZXhwIjoxNzA0NjU0ODMxfQ.g9LaF04AlQDmXn3GfULPWHX4X1-RY3G2j6DIwr2Yd0g","refreshToken":"f06f38f9901a1d2120bb50993434a586362c04ebe01163464486198afcd720a8882e8e35b1f9890e"}"
+
+Обновляем данные пользователя ...
+
+Отправляем запрос на обновление данных пользователя: PATCH url="https://stellarburgers.nomoreparties.site/api/auth/user"
+headers="{'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1OWFmMzNmOWVkMjgwMDAxYjNhMWE3YiIsImlhdCI6MTcwNDY1MzYzMSwiZXhwIjoxNzA0NjU0ODMxfQ.g9LaF04AlQDmXn3GfULPWHX4X1-RY3G2j6DIwr2Yd0g'}"
+json="{'email': 'dhejcjsxkq@mail.ru'}"
+response="<Response [200]>", response.text="{"success":true,"user":{"email":"dhejcjsxkq@mail.ru","name":"yjwpwvuwxa"}}"
+
+Teardown_method "TestUpdateUser" ...
+self.to_teardown=True
+
+Удаляем пользователя ...
+
+Отправляем запрос на удаление пользователя: DELETE url="https://stellarburgers.nomoreparties.site/api/auth/user"
+headers="{'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1OWFmMzNmOWVkMjgwMDAxYjNhMWE3YiIsImlhdCI6MTcwNDY1MzYzMSwiZXhwIjoxNzA0NjU0ODMxfQ.g9LaF04AlQDmXn3GfULPWHX4X1-RY3G2j6DIwr2Yd0g'}"
+response="<Response [202]>", response.text="{"success":true,"message":"User successfully removed"}"

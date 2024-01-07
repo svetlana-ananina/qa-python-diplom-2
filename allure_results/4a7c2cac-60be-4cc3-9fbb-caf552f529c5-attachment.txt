@@ -1,0 +1,11 @@
+
+setup_method "TestCreateUser" ...
+
+Создаем/регистрируем нового пользователя ...
+
+Отправляем запрос на создание пользователя: POST url="https://stellarburgers.nomoreparties.site/api/auth/register"
+json="{'email': 'fmwjaizyaa@mail.ru', 'password': 'mtxdinacmo'}"
+response="<Response [403]>", response.text="{"success":false,"message":"Email, password and name are required fields"}"
+
+teardown_method "TestCreateUser" ...
+self.to_teardown=False

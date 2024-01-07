@@ -1,0 +1,23 @@
+
+Setup_method "TestLoginUser" ...
+
+Создаем/регистрируем нового пользователя ...
+
+Отправляем запрос на создание пользователя: POST url="https://stellarburgers.nomoreparties.site/api/auth/register"
+json="{'email': 'wfzzjhpmkf@mail.ru', 'password': 'ofuvluvnyw', 'name': 'ckhphyfzpx'}"
+response="<Response [200]>", response.text="{"success":true,"user":{"email":"wfzzjhpmkf@mail.ru","name":"ckhphyfzpx"},"accessToken":"Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1OWFmMzNjOWVkMjgwMDAxYjNhMWE3OSIsImlhdCI6MTcwNDY1MzYyOCwiZXhwIjoxNzA0NjU0ODI4fQ.2bBD4a5qxuBcLU8pKwfhga5997qiG57iuUtjGehFtZY","refreshToken":"b79a6cecf21edf3ecc1659d2a457548ee086a2e9caef647bad2652b07e6378b429e74092f78cbdae"}"
+
+Авторизация пользователя ...
+
+Отправляем запрос на авторизацию пользователя: POST url="https://stellarburgers.nomoreparties.site/api/auth/login"
+json="{'email': 'wfzzjhpmkf@mail.ru', 'password': ''}"
+response="<Response [401]>", response.text="{"success":false,"message":"email or password are incorrect"}"
+
+Teardown_method "TestLoginUser" ...
+self.to_teardown=True
+
+Удаляем пользователя ...
+
+Отправляем запрос на удаление пользователя: DELETE url="https://stellarburgers.nomoreparties.site/api/auth/user"
+headers="{'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1OWFmMzNjOWVkMjgwMDAxYjNhMWE3OSIsImlhdCI6MTcwNDY1MzYyOCwiZXhwIjoxNzA0NjU0ODI4fQ.2bBD4a5qxuBcLU8pKwfhga5997qiG57iuUtjGehFtZY'}"
+response="<Response [202]>", response.text="{"success":true,"message":"User successfully removed"}"
