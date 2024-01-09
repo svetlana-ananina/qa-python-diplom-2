@@ -42,8 +42,11 @@ class TestCreateUser:
         # отправляем запрос на создание пользователя и проверяем полученные данные
         auth_token, refresh_token = u.create_and_check_user(user_data)
 
-        # сохраняем полученные данные пользователя
+        # сохраняем полученные данные пользователя для удаления
         self.__init_teardown(user_data, auth_token, refresh_token)
+
+        assert auth_token is not None
+        assert refresh_token is not None
 
 
     @allure.title('Проверка создания пользователя - повторная регистрация пользователя')
