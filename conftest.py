@@ -11,45 +11,27 @@ from helpers.helpers_on_requests import request_on_get_ingredients
 
 # Получаем данные об ингредиентах от API
 @allure.title('Получаем данные об ингредиентах')
-@pytest.fixture(name='get_ingredients_from_api',scope="session")
+@pytest.fixture(scope="session")
 def get_ingredients_from_api():
-    _print_info('\nПолучаем данные об ингредиентах ...')
-    response = try_to_get_ingredients()
-    # проверяем что получен код ответа 200
-    ingredients = check_ingredients_list(response)
-    #buns_list = get_buns_list(ingredients)
-    #fillings_list = get_fillings_list(ingredients)
-    #sauces_list = get_sauces_list(ingredients)
-
-    #return buns_list, fillings_list, sauces_list
-    return ingredients
+    return check_ingredients_list(try_to_get_ingredients())
 
 
 @allure.title('Получаем список булок')
-@pytest.fixture(name='get_buns_list_from_api',scope="session")
+@pytest.fixture(scope="session")
 def get_buns_list_from_api(get_ingredients_from_api):
-    _print_info('\nПолучаем список булок ...')
-    ingredients = get_ingredients_from_api
-    buns_list = get_buns_list(ingredients)
-    return buns_list
+    return get_buns_list(get_ingredients_from_api)
 
 
 @allure.title('Получаем список начинок')
-@pytest.fixture(name='get_fillings_list_from_api',scope="session")
+@pytest.fixture(scope="session")
 def get_fillings_list_from_api(get_ingredients_from_api):
-    _print_info('\nПолучаем список начинок ...')
-    ingredients = get_ingredients_from_api
-    fillings_list = get_fillings_list(ingredients)
-    return fillings_list
+    return get_fillings_list(get_ingredients_from_api)
 
 
 @allure.title('Получаем список соусов')
-@pytest.fixture(name='get_sauces_list_from_api',scope="session")
+@pytest.fixture(scope="session")
 def get_sauces_list_from_api(get_ingredients_from_api):
-    _print_info('\nПолучаем список соусов ...')
-    ingredients = get_ingredients_from_api
-    sauces_list = get_sauces_list(ingredients)
-    return sauces_list
+    return get_sauces_list(get_ingredients_from_api)
 
 
 
