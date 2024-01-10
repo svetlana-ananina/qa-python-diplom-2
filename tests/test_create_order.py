@@ -18,12 +18,29 @@ def _print_info(info):
 @pytest.fixture(scope='class')
 @allure.title('Инициализируем списки ингредиентов')
 def setup_ingredients():
-    _print_info(f'\nTestCreateOrder::setup_ingredients ...')
+    _print_info(f'\ntest_create_order::setup_ingredients ...')
     ingredients = g.get_ingredients()
     TestCreateOrder.buns_list = g.get_buns_list(ingredients)
     TestCreateOrder.fillings_list = g.get_fillings_list(ingredients)
     TestCreateOrder.sauces_list = g.get_sauces_list(ingredients)
     c.check_ingredients(TestCreateOrder.buns_list, TestCreateOrder.fillings_list, TestCreateOrder.sauces_list)
+
+
+@pytest.fixture
+@allure.title('Инициализируем данные пользователя для удаления после завершения работы')
+def setup_user():
+    _print_info(f'\ntest_create_order::setup_user  ...')
+    # генерируем данные нового пользователя: email, password, user_name
+    user_data = u.generate_random_user_data()
+    # отправляем запрос на создание пользователя
+    auth_token, refresh_token = u.create_user(user_data)
+    # сохраняем полученные данные пользователя
+    #self.auth_token = auth_token
+    yield auth_token
+
+    # Удаляем созданного пользователя
+    _print_info(f'\ntest_create_order::setup_user Удаляем пользователя  ...')
+    u.try_to_delete_user(auth_token)
 
 
 @pytest.mark.usefixtures('setup_ingredients', scope='class')
@@ -32,22 +49,6 @@ class TestCreateOrder:
     buns_list = None
     fillings_list = None
     sauces_list = None
-
-
-    @pytest.fixture
-    @allure.title('Инициализируем данные пользователя для удаления после завершения работы')
-    def __setup_user(self):
-        _print_info(f'\nTestCreateOrder::__setup_user  ...')
-        # генерируем данные нового пользователя: email, password, user_name
-        user_data = u.generate_random_user_data()
-        # отправляем запрос на создание пользователя
-        auth_token, refresh_token = u.create_user(user_data)
-        # сохраняем полученные данные пользователя
-        self.auth_token = auth_token
-        yield
-
-        # Удаляем созданного пользователя
-        u.try_to_delete_user(auth_token)
 
 
     @allure.step('Собираем бургер для заказа')
@@ -61,29 +62,33 @@ class TestCreateOrder:
 
 
     @allure.title('Проверка создания заказа для авторизованного пользователя')
-    def test_create_order_authorized_user(self, __setup_user):
+    def test_create_order_authorized_user(self, setup_user):
+        # сохраняем авторизационный токен пользователя, полученный при регистрации
+        auth_token = setup_user
         # составляем список ингредиентов для бургера
         ingredients_id_list = self.__create_burger()
 
         # отправляем запрос на создание заказа
-        response = u.try_to_create_order(ingredients_id_list, self.auth_token)
+        response = u.try_to_create_order(ingredients_id_list, auth_token)
 
         # проверяем полученный ответ и данные заказа
         c.check_order_data(response)
 
 
     @allure.title('Проверка создания заказа для авторизованного пользователя')
-    def test_create_order_two_orders_for_authorized_user(self, __setup_user):
+    def test_create_order_two_orders_for_authorized_user(self, setup_user):
+        # сохраняем авторизационный токен пользователя, полученный при регистрации
+        auth_token = setup_user
         # составляем список ингредиентов для бургера
         ingredients_id_list = self.__create_burger()
 
         # отправляем запрос на создание заказа
-        response = u.try_to_create_order(ingredients_id_list, self.auth_token)
+        response = u.try_to_create_order(ingredients_id_list, auth_token)
         # проверяем полученный ответ и данные заказа
         c.check_order_data(response)
 
         # отправляем запрос на создание еще одного заказа
-        response = u.try_to_create_order(ingredients_id_list, self.auth_token)
+        response = u.try_to_create_order(ingredients_id_list, auth_token)
         # проверяем полученный ответ и данные заказа
         c.check_order_data(response)
 
