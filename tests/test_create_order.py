@@ -12,20 +12,18 @@ from helpers.helpers_on_get_ingredients import HelpersOnGetIngredients as g
 
 def _print_info(info):
     print(info)
+    #pass
 
 
 @pytest.fixture(scope='class')
 @allure.title('Инициализируем списки ингредиентов')
 def setup_ingredients():
-    _print_info(f'\nsetup_ingredients "TestCreateOrder" ...')
+    _print_info(f'\nTestCreateOrder::setup_ingredients ...')
     ingredients = g.get_ingredients()
-    buns_list = g.get_buns_list(ingredients)
-    fillings_list = g.get_fillings_list(ingredients)
-    sauces_list = g.get_sauces_list(ingredients)
-    c.check_ingredients(buns_list, fillings_list, sauces_list)
-    TestCreateOrder.buns_list = buns_list
-    TestCreateOrder.fillings_list = fillings_list
-    TestCreateOrder.sauces_list = sauces_list
+    TestCreateOrder.buns_list = g.get_buns_list(ingredients)
+    TestCreateOrder.fillings_list = g.get_fillings_list(ingredients)
+    TestCreateOrder.sauces_list = g.get_sauces_list(ingredients)
+    c.check_ingredients(TestCreateOrder.buns_list, TestCreateOrder.fillings_list, TestCreateOrder.sauces_list)
 
 
 @pytest.mark.usefixtures('setup_ingredients', scope='class')
@@ -39,6 +37,7 @@ class TestCreateOrder:
     @pytest.fixture
     @allure.title('Инициализируем данные пользователя для удаления после завершения работы')
     def __setup_user(self):
+        _print_info(f'\nTestCreateOrder::__setup_user  ...')
         # генерируем данные нового пользователя: email, password, user_name
         user_data = u.generate_random_user_data()
         # отправляем запрос на создание пользователя

@@ -24,10 +24,12 @@ class HelpersOnCreateUser:
         random_string = ''.join(random.choice(letters) for i in range(length))
         return random_string
 
+
     @staticmethod
     @allure.step('Отправляем запрос на создание нового пользователя')
     def try_to_create_user(user_data):
         return r.request_on_create_user(user_data)
+
 
     @staticmethod
     @allure.step('Авторизация пользователя')
@@ -35,11 +37,13 @@ class HelpersOnCreateUser:
         payload = {KEYS.EMAIL_KEY: email, KEYS.PASSWORD_KEY: password}
         return r.request_on_login_user(payload)
 
+
     @staticmethod
     @allure.step('Удаляем пользователя')
     def try_to_delete_user(auth_token):
         headers = {KEYS.AUTH_TOKEN_KEY: auth_token}
         return r.request_on_delete_user(headers)
+
 
     @staticmethod
     @allure.step('Обновляем данные пользователя')
@@ -50,11 +54,13 @@ class HelpersOnCreateUser:
             headers = None
         return r.request_on_update_user(user_data, headers)
 
+
     @staticmethod
     @allure.step('Выход пользователя из системы')
     def try_to_logout_user(token):
         payload = {KEYS.TOKEN_KEY: token}
         return r.request_on_logout_user(payload)
+
 
     # Вспомогательные методы для работы с заказами
     @staticmethod
@@ -71,6 +77,7 @@ class HelpersOnCreateUser:
             KEYS.INGREDIENTS: ingredient_list,  # "ingredients": ingredient_list,
         }
         return r.request_on_create_order(payload, headers)
+
 
     @staticmethod
     @allure.step('Отправляем запрос на получение заказов пользователя')
@@ -100,20 +107,24 @@ class HelpersOnCreateUser:
         # возвращаем словарь
         return user_data
 
+
     @staticmethod
     @allure.step('Генерируем новое имя пользователя: поле "name"')
     def generate_random_user_name():
         return HelpersOnCreateUser.generate_random_string(10)
+
 
     @staticmethod
     @allure.step('Генерируем email пользователя: поле "email"')
     def generate_random_user_login():
         return HelpersOnCreateUser.generate_random_string(10) + '@mail.ru'
 
+
     @staticmethod
     @allure.step('Генерируем пароль пользователя: поле "password"')
     def generate_random_user_password():
         return HelpersOnCreateUser.generate_random_string(10)
+
 
     # метод создания нового пользователя и проверки полученного ответа
     @staticmethod
@@ -131,6 +142,7 @@ class HelpersOnCreateUser:
         auth_token, refresh_token = c.check_new_user_data(received_body, user_data)
         return auth_token, refresh_token
 
+
     # вспомогательный метод создания нового пользователя для других тестов
     @staticmethod
     @allure.step('Создаем нового пользователя')
@@ -147,6 +159,7 @@ class HelpersOnCreateUser:
         auth_token = received_body[KEYS.ACCESS_TOKEN]
         refresh_token = received_body[KEYS.REFRESH_TOKEN]
         return auth_token, refresh_token
+
 
     # Вспомогательные методы для работы с заказами
     @staticmethod
