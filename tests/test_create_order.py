@@ -20,20 +20,6 @@ def setup_ingredients():
     c.check_ingredients(TestCreateOrder.buns_list, TestCreateOrder.fillings_list, TestCreateOrder.sauces_list)
 
 
-@pytest.fixture
-@allure.title('Инициализируем данные пользователя для удаления после завершения работы')
-def setup_user():
-    # генерируем данные нового пользователя: email, password, user_name
-    user_data = u.generate_random_user_data()
-    # отправляем запрос на создание пользователя
-    auth_token, refresh_token = u.create_user(user_data)
-    # сохраняем полученные данные пользователя
-    yield auth_token
-
-    # Удаляем созданного пользователя
-    u.try_to_delete_user(auth_token)
-
-
 @pytest.mark.usefixtures('setup_ingredients', scope='class')
 class TestCreateOrder:
 
@@ -55,7 +41,7 @@ class TestCreateOrder:
     @allure.title('Проверка создания заказа для авторизованного пользователя')
     def test_create_order_authorized_user(self, setup_user):
         # сохраняем авторизационный токен пользователя, полученный при регистрации
-        auth_token = setup_user
+        user_data, auth_token = setup_user
         # составляем список ингредиентов для бургера
         ingredients_id_list = self.__create_burger()
         # отправляем запрос на создание заказа
@@ -68,7 +54,7 @@ class TestCreateOrder:
     @allure.title('Проверка создания заказа для авторизованного пользователя')
     def test_create_order_two_orders_for_authorized_user(self, setup_user):
         # сохраняем авторизационный токен пользователя, полученный при регистрации
-        auth_token = setup_user
+        user_data, auth_token = setup_user
         # составляем список ингредиентов для бургера
         ingredients_id_list = self.__create_burger()
         # отправляем запрос на создание заказа

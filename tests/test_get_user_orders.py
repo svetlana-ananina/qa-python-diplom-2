@@ -1,15 +1,13 @@
 import pytest
 import allure
 
-from data import STATUS_CODES as CODE
-from data import RESPONSE_KEYS as KEYS
-from data import RESPONSE_MESSAGES as text
+from data import StatusCodes as CODE
+from data import ResponseKeys as KEYS
+from data import ResponseMessages as message
 
-from helpers.helpers_on_check_response import check_ingredients, check_received_order_data, check_received_orders_list, \
-    check_received_orders_info, check_success_ok, check_not_success_error_message
-from helpers.helpers_on_check_response import _print_info
-from helpers.helpers_on_create_user import  try_to_delete_user, create_user, create_order, try_to_get_user_orders
-from helpers.helpers_on_get_ingredients import get_buns_list, get_fillings_list, get_sauces_list, get_ingredients
+from helpers.helpers_on_check_response import HelpersOnCheck as c
+from helpers.helpers_on_create_user import HelpersOnCreateUser as u
+from helpers.helpers_on_get_ingredients import HelpersOnGetIngredients as g
 
 
 class TestGetUserOrders:
@@ -32,32 +30,6 @@ class TestGetUserOrders:
         cls.sauces_list = get_sauces_list(cls.ingredients)
         check_ingredients(cls.buns_list, cls.fillings_list, cls.sauces_list)
 
-    def setup_method(self):
-        """
-        Инициализируем данные пользователя для удаления после завершения работы
-        """
-        _print_info(f'\nSetup_method "TestGetUserOrders" ...')
-        # создаем пользователя
-        auth_token, refresh_token = create_user()
-        # Сохраняем данные для удаления созданного пользователя
-        self._init_teardown(auth_token, refresh_token)
-
-    def teardown_method(self):
-        """
-        Удаляем созданного пользователя
-        """
-        _print_info(f'\nTeardown_method "TestGetUserOrders" ...')
-        _print_info(f'self.to_teardown={self.to_teardown}')
-        if self.to_teardown:
-            try_to_delete_user(self.auth_token)
-
-    def _init_teardown(self, auth_token, refresh_token):
-        """
-        сохраняем полученные данные пользователя
-        """
-        self.to_teardown = True                 # Выполнять удаление созданного пользователя
-        self.auth_token = auth_token
-        self.refresh_token = refresh_token
 
     @classmethod
     def create_burger(cls):
