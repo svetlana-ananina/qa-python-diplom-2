@@ -8,24 +8,21 @@ from helpers.helpers_on_check_response import HelpersOnCheck as c
 from helpers.helpers_on_create_user import HelpersOnCreateUser as u
 
 
+@pytest.fixture
+@allure.title('Инициализируем данные пользователя для удаления после завершения работы')
+def setup_user():
+    # генерируем данные нового пользователя: email, password, user_name
+    user_data = u.generate_random_user_data()
+    # отправляем запрос на создание пользователя
+    auth_token, refresh_token = u.create_user(user_data)
+    # сохраняем полученные данные пользователя
+    yield auth_token
+
+    # Удаляем созданного пользователя
+    u.try_to_delete_user(auth_token)
+
+
 class TestLoginUser:
-
-    @pytest.fixture
-    def __setup_user(self):
-        """
-        Инициализируем данные пользователя для удаления после завершения работы
-        """
-        # генерируем данные нового пользователя: email, password, user_name
-        user_data = u.generate_random_user_data()
-        # отправляем запрос на создание пользователя
-        auth_token, refresh_token = u.create_user(user_data)
-        # сохраняем полученные данные пользователя
-        self.user_data = user_data.copy()
-        yield
-
-        # Удаляем созданного пользователя
-        u.try_to_delete_user(auth_token)
-
 
     @allure.title('Проверка авторизации пользователя под существующим пользователем')
     def test_login_user_success(self, __setup_user):

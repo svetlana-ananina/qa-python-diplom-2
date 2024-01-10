@@ -28,8 +28,8 @@ class TestCreateUser:
 
     @allure.title('Сохраняем полученные данные пользователя для удаления после завершения работы')
     def __init_teardown(self, auth_token):
-        self.to_teardown = True
-        self.auth_token = auth_token
+        TestCreateUser.to_teardown = True
+        TestCreateUser.auth_token = auth_token
 
 
     @allure.title('Проверка создания пользователя - регистрация уникального пользователя')
