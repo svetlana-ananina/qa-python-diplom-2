@@ -10,15 +10,9 @@ from helpers.helpers_on_create_user import HelpersOnCreateUser as u
 from helpers.helpers_on_get_ingredients import HelpersOnGetIngredients as g
 
 
-def _print_info(info):
-    print(info)
-    #pass
-
-
 @pytest.fixture(scope='class')
 @allure.title('Инициализируем списки ингредиентов')
 def setup_ingredients():
-    _print_info(f'\ntest_create_order::setup_ingredients ...')
     ingredients = g.get_ingredients()
     TestCreateOrder.buns_list = g.get_buns_list(ingredients)
     TestCreateOrder.fillings_list = g.get_fillings_list(ingredients)
@@ -29,17 +23,14 @@ def setup_ingredients():
 @pytest.fixture
 @allure.title('Инициализируем данные пользователя для удаления после завершения работы')
 def setup_user():
-    _print_info(f'\ntest_create_order::setup_user  ...')
     # генерируем данные нового пользователя: email, password, user_name
     user_data = u.generate_random_user_data()
     # отправляем запрос на создание пользователя
     auth_token, refresh_token = u.create_user(user_data)
     # сохраняем полученные данные пользователя
-    #self.auth_token = auth_token
     yield auth_token
 
     # Удаляем созданного пользователя
-    _print_info(f'\ntest_create_order::setup_user Удаляем пользователя  ...')
     u.try_to_delete_user(auth_token)
 
 
@@ -67,7 +58,6 @@ class TestCreateOrder:
         auth_token = setup_user
         # составляем список ингредиентов для бургера
         ingredients_id_list = self.__create_burger()
-
         # отправляем запрос на создание заказа
         response = u.try_to_create_order(ingredients_id_list, auth_token)
 
@@ -81,14 +71,13 @@ class TestCreateOrder:
         auth_token = setup_user
         # составляем список ингредиентов для бургера
         ingredients_id_list = self.__create_burger()
-
         # отправляем запрос на создание заказа
         response = u.try_to_create_order(ingredients_id_list, auth_token)
         # проверяем полученный ответ и данные заказа
         c.check_order_data(response)
-
         # отправляем запрос на создание еще одного заказа
         response = u.try_to_create_order(ingredients_id_list, auth_token)
+
         # проверяем полученный ответ и данные заказа
         c.check_order_data(response)
 
@@ -97,7 +86,6 @@ class TestCreateOrder:
     def test_create_order_unauthorized(self):
         # составляем список ингредиентов для бургера
         ingredients_id_list = self.__create_burger()
-
         # отправляем запрос на создание заказа
         response = u.try_to_create_order(ingredients_id_list)
 
@@ -109,7 +97,6 @@ class TestCreateOrder:
     def test_create_order_no_ingredients(self):
         # составляем список ингредиентов для бургера
         ingredients_id_list = []
-
         # отправляем запрос на создание заказа
         response = u.try_to_create_order(ingredients_id_list)
 
@@ -123,7 +110,6 @@ class TestCreateOrder:
     def test_create_order_invalid_ingredient_hash(self):
         # составляем список ингредиентов для бургера
         ingredients_id_list = ['0000000000']
-
         # отправляем запрос на создание заказа
         response = u.try_to_create_order(ingredients_id_list)
 

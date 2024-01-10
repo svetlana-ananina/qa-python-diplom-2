@@ -94,7 +94,6 @@ class HelpersOnCheck:
         # проверяем наличие в ответе ключа "user" и получаем его значение - словарь
         received_user_data = HelpersOnCheck.check_key_in_body(received_body, KEYS.USER_KEY)
         assert type(received_user_data) is dict
-
         # проверяем в словаре "user" наличие и значения полей "email" и "name"
         email = user_data[KEYS.EMAIL_KEY]
         name = user_data[KEYS.NAME_KEY]
@@ -115,7 +114,6 @@ class HelpersOnCheck:
                 e.ACCESS_TOKEN_PREFIX in auth_token and
                 len(auth_token) > len(
                     e.ACCESS_TOKEN_PREFIX)), f'Получено неверное значение ключа "{KEYS.ACCESS_TOKEN}": неправильный формат "{KEYS.ACCESS_TOKEN}"={auth_token}'
-
         # проверяем наличие в ответе ключа "refreshToken" и получаем его значение - строку `"..."
         refresh_token = HelpersOnCheck.check_key_in_body(received_body, KEYS.REFRESH_TOKEN)
         # проверяем токен
@@ -136,20 +134,16 @@ class HelpersOnCheck:
         # проверяем в теле ответа: { "success" = True }
         received_body = HelpersOnCheck.check_success(response, True)
         # проверяем полученные данные заказа в теле ответа
-
         # проверяем наличие в ответе ключа "name" и получаем его значение - строка
         order_name = HelpersOnCheck.check_key_in_body(received_body, KEYS.NAME_KEY)
         assert type(order_name) is str, f'Получено неверное значение ключа "{KEYS.NAME_KEY}": ожидалось - строка, получено значение {order_name} тип {type(order_name)}'
-
         # проверяем наличие в ответе ключа "order" и получаем его значение - словарь
         received_order_data = HelpersOnCheck.check_key_in_body(received_body, KEYS.ORDER_KEY)
         assert type(received_order_data) is dict
-
         # проверяем в словаре "order" наличие и значения поля "number"
         order_number = HelpersOnCheck.check_key_in_body(received_order_data, KEYS.NUMBER_KEY)
         assert str(
             order_number).isdigit(), f'Получено неверное значение ключа "{KEYS.NUMBER_KEY}": ожидалось - число, получено значение {order_number} тип {type(order_number)}'
-
         return order_number, order_name
 
 
