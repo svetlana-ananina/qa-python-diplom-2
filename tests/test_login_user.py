@@ -11,7 +11,7 @@ from helpers.helpers_on_create_user import HelpersOnCreateUser as u
 class TestLoginUser:
 
     @pytest.fixture
-    def setup_user(self):
+    def __setup_user(self):
         """
         Инициализируем данные пользователя для удаления после завершения работы
         """
@@ -28,7 +28,7 @@ class TestLoginUser:
 
 
     @allure.title('Проверка авторизации пользователя под существующим пользователем')
-    def test_login_user_success(self, setup_user):
+    def test_login_user_success(self, __setup_user):
         # отправляем запрос на авторизацию пользователя
         response = u.try_to_login_user(self.user_data[KEYS.EMAIL_KEY], self.user_data[KEYS.PASSWORD_KEY])
 
@@ -45,7 +45,7 @@ class TestLoginUser:
         KEYS.EMAIL_KEY,
         KEYS.PASSWORD_KEY
     ])
-    def test_login_user_invalid_login_or_password_error(self, setup_user, field):
+    def test_login_user_invalid_login_or_password_error(self, __setup_user, field):
         # формируем данные для авторизации с неверным полем field
         new_user_data = self.user_data.copy()
         new_user_data[field] = ""

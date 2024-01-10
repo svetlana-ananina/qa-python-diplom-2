@@ -11,7 +11,7 @@ from helpers.helpers_on_create_user import HelpersOnCreateUser as u
 class TestCreateUser:
 
     @pytest.fixture
-    def setup_user(self):
+    def __setup_user(self):
         # Инициализируем данные пользователя для удаления после завершения работы
         self.to_teardown = False        # Выполнять удаление созданного пользователя
         self.user_data = None
@@ -33,7 +33,7 @@ class TestCreateUser:
 
 
     @allure.title('Проверка создания пользователя - регистрация уникального пользователя')
-    def test_create_user_new_user(self, setup_user):
+    def test_create_user_new_user(self, __setup_user):
         # генерируем уникальные данные нового пользователя: email, password, user_name
         user_data = u.generate_random_user_data()
 
@@ -48,7 +48,7 @@ class TestCreateUser:
 
 
     @allure.title('Проверка создания пользователя - повторная регистрация пользователя')
-    def test_create_user_double_user_error(self, setup_user):
+    def test_create_user_double_user_error(self, __setup_user):
         # генерируем уникальные данные нового пользователя: email, password, user_name
         user_data = u.generate_random_user_data()
         # отправляем запрос на создание пользователя
@@ -70,7 +70,7 @@ class TestCreateUser:
         KEYS.PASSWORD_KEY,
         KEYS.NAME_KEY
     ])
-    def test_create_user_empty_field_error(self, setup_user, field):
+    def test_create_user_empty_field_error(self, __setup_user, field):
         # генерируем уникальные данные нового пользователя: email, password, user_name
         user_data = u.generate_random_user_data()
         # удаляем поле field
