@@ -12,6 +12,7 @@ class TestLoginUser:
 
     @allure.title('Проверка авторизации пользователя под существующим пользователем')
     def test_login_user_success(self, setup_user):
+        # сохраняем авторизационный токен пользователя, полученный при регистрации
         user_data, auth_token = setup_user
         # отправляем запрос на авторизацию пользователя
         response = u.try_to_login_user(user_data[KEYS.EMAIL_KEY], user_data[KEYS.PASSWORD_KEY])
@@ -30,6 +31,7 @@ class TestLoginUser:
         KEYS.EMAIL_KEY,
     ])
     def test_login_user_invalid_login_or_password_error(self, setup_user, field):
+        # сохраняем авторизационный токен пользователя, полученный при регистрации
         user_data, auth_token = setup_user
         # формируем данные для авторизации с неверным полем field
         new_user_data = user_data.copy()
