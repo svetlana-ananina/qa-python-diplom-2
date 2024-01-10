@@ -27,18 +27,21 @@ class HelpersOnCreateUser:
     @staticmethod
     @allure.step('Отправляем запрос на создание нового пользователя')
     def try_to_create_user(user_data):
+        print(f'\ntry_to_create_user ... user_data={user_data}')
         return r.request_on_create_user(user_data)
 
     @staticmethod
     @allure.step('Авторизация пользователя')
     def try_to_login_user(email, password):
         payload = {KEYS.EMAIL_KEY: email, KEYS.PASSWORD_KEY: password}
+        print(f'\ntry_to_login_user ... payload={payload}')
         return r.request_on_login_user(payload)
 
     @staticmethod
     @allure.step('Удаляем пользователя')
     def try_to_delete_user(auth_token):
         headers = {KEYS.AUTH_TOKEN_KEY: auth_token}
+        print(f'\ntry_to_delete_user ...')
         return r.request_on_delete_user(headers)
 
     @staticmethod
@@ -48,12 +51,14 @@ class HelpersOnCreateUser:
             headers = {KEYS.AUTH_TOKEN_KEY: auth_token}
         else:
             headers = None
+        print(f'\ntry_to_update_user ... user_data={user_data}')
         return r.request_on_update_user(user_data, headers)
 
     @staticmethod
     @allure.step('Выход пользователя из системы')
     def try_to_logout_user(token):
         payload = {KEYS.TOKEN_KEY: token}
+        print(f'\ntry_to_logout_user ... ')
         return r.request_on_logout_user(payload)
 
     # Вспомогательные методы для работы с заказами
@@ -70,6 +75,7 @@ class HelpersOnCreateUser:
         payload = {
             KEYS.INGREDIENTS: ingredient_list,  # "ingredients": ingredient_list,
         }
+        print(f'\ntry_to_create_order ... payload={payload}')
         return r.request_on_create_order(payload, headers)
 
     @staticmethod
@@ -81,6 +87,7 @@ class HelpersOnCreateUser:
             }
         else:
             headers = None
+        print(f'\ntry_to_get_user_orders ... ')
         return r.request_on_get_user_orders(headers)
 
 

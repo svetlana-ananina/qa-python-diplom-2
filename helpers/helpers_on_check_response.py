@@ -172,9 +172,9 @@ class HelpersOnCheck:
         received_order_id = HelpersOnCheck.check_key_in_body(received_order_data, KEYS.ID_KEY)
         assert type(received_order_id) is str
         # проверяем что поле "number" = order_number
-        received_order_number = HelpersOnCheck.check_key_and_value_in_body(received_order_data, KEYS.NUMBER_KEY, order_number)
+        HelpersOnCheck.check_key_and_value_in_body(received_order_data, KEYS.NUMBER_KEY, order_number)
         # проверяем что поле "name" = order_name
-        received_order_number = HelpersOnCheck.check_key_and_value_in_body(received_order_data, KEYS.NAME_KEY, order_name)
+        HelpersOnCheck.check_key_and_value_in_body(received_order_data, KEYS.NAME_KEY, order_name)
         # проверяем поле "ingredients"
         received_ingredients_list = HelpersOnCheck.check_key_in_body(received_order_data, KEYS.INGREDIENTS)
         assert type(received_ingredients_list) is list

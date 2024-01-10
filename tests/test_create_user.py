@@ -16,7 +16,6 @@ class TestCreateUser:
         self.to_teardown = False        # Выполнять удаление созданного пользователя
         self.user_data = None
         self.auth_token = None
-        self.refresh_token = None
 
         yield
         # Удаляем созданного пользователя
@@ -24,14 +23,13 @@ class TestCreateUser:
             u.try_to_delete_user(self.auth_token)
 
 
-    def __init_teardown(self, user_data, auth_token, refresh_token):
+    def __init_teardown(self, user_data, auth_token):
         """
         Сохраняем полученные данные пользователя
         """
         self.user_data = user_data.copy()
         self.to_teardown = True
         self.auth_token = auth_token
-        self.refresh_token = refresh_token
 
 
     @allure.title('Проверка создания пользователя - регистрация уникального пользователя')
@@ -43,7 +41,7 @@ class TestCreateUser:
         auth_token, refresh_token = u.create_and_check_user(user_data)
 
         # сохраняем полученные данные пользователя для удаления
-        self.__init_teardown(user_data, auth_token, refresh_token)
+        self.__init_teardown(user_data, auth_token)
 
         assert auth_token is not None
         assert refresh_token is not None
@@ -56,7 +54,7 @@ class TestCreateUser:
         # отправляем запрос на создание пользователя
         auth_token, refresh_token = u.create_user(user_data)
         # сохраняем полученные данные пользователя
-        self.__init_teardown(user_data, auth_token, refresh_token)
+        self.__init_teardown(user_data, auth_token)
         # отправляем повторный запрос на создание того же пользователя
         response = u.try_to_create_user(user_data)
 
