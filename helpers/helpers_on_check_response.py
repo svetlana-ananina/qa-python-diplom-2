@@ -14,6 +14,7 @@ class HelpersOnCheck:
         assert key in response_body, f'В ответе отсутствует ключ "{key}", получен ответ: "{response_body}"'
         return response_body[key]
 
+
     @staticmethod
     @allure.step('Проверяем значение ключа в ответе')
     def check_key_and_value_in_body(response_body, key, value):
@@ -24,12 +25,14 @@ class HelpersOnCheck:
         assert received_value == value, f'Получено неверное значение ключа "{key}": ожидалось "{value}", получено "{received_value}"'
         return received_value
 
+
     @staticmethod
     @allure.step('Проверяем код ответа')
     def check_status_code(response, expected_code):
         # проверяем что получен код ответа expected_code
         received_code = response.status_code
         assert received_code == expected_code, f'Неверный код в ответе: ожидался {expected_code}, получен "{received_code}", ответ: "{response.text}"'
+
 
     @staticmethod
     @allure.step('Проверяем значение поля "success" в ответе')
@@ -44,6 +47,7 @@ class HelpersOnCheck:
         assert received_value == expected_value, f'Получено неверное значение поля "{KEYS.SUCCESS_KEY}": ожидалось "{expected_value}", получено "{received_value}"'
         return received_body
 
+
     @staticmethod
     @allure.step('Проверяем, что запрос выполнен успешно')
     def check_success_ok(response):
@@ -51,6 +55,7 @@ class HelpersOnCheck:
         HelpersOnCheck.check_status_code(response, CODE.OK)
         # проверяем в теле ответа: { "success" = True }
         return HelpersOnCheck.check_success(response, True)
+
 
     @staticmethod
     @allure.step('Проверяем код ошибки и сообщение об ошибке')
@@ -63,6 +68,7 @@ class HelpersOnCheck:
         HelpersOnCheck.check_message(received_body, message)
         return received_body
 
+
     @staticmethod
     @allure.step('Проверяем сообщение в ответе')
     def check_message(received_body, expected_message):
@@ -73,10 +79,12 @@ class HelpersOnCheck:
         assert received_message == expected_message, f'Получено неверное значение поля "{KEYS.MESSAGE_KEY}":\nожидалось "{expected_message}"\nполучено "{received_message}"'
         return received_message
 
+
     @staticmethod
     @allure.step('Получаем значение ключа')
     def get_key_from_body(response_body, key):
         return response_body[key]
+
 
     #
     # Проверка полученных данных пользователя после создания/авторизации пользователя
@@ -92,6 +100,7 @@ class HelpersOnCheck:
         name = user_data[KEYS.NAME_KEY]
         HelpersOnCheck.check_key_and_value_in_body(received_user_data, KEYS.EMAIL_KEY, email)
         HelpersOnCheck.check_key_and_value_in_body(received_user_data, KEYS.NAME_KEY, name)
+
 
     @staticmethod
     @allure.step('Проверяем полученные данные пользователя после регистрации/авторизации')
@@ -114,6 +123,7 @@ class HelpersOnCheck:
                 len(refresh_token) > 0), f'Получено неверное значение ключа "{KEYS.REFRESH_TOKEN}": неправильный формат "{KEYS.REFRESH_TOKEN}"={refresh_token}'
         # возвращаем полученные токены
         return auth_token, refresh_token
+
 
     #
     # Проверка полученных данных после создания заказа
@@ -142,11 +152,15 @@ class HelpersOnCheck:
 
         return order_number, order_name
 
+
+
     @staticmethod
     @allure.step('Проверяем списки ингредиентов по типам - булки, начинки, соусы')
     def check_ingredients(buns_list, fillings_list, sauces_list):
-        assert len(buns_list) != 0 and len(fillings_list) != 0 and len(sauces_list) != 0, \
-            f'TestCreateOrder ошибка - в списке ингредиентов нет по крайней мере одного из необходимых типов (булки, начинки, соусы)'
+        assert type(buns_list) is list and len(buns_list) != 0, f'TestCreateOrder ошибка - в списке ингредиентов нет булок'
+        assert type(fillings_list) is list and len(fillings_list) != 0, f'TestCreateOrder ошибка - в списке ингредиентов нет начинок'
+        assert type(sauces_list) is list and len(sauces_list) != 0, f'TestCreateOrder ошибка - в списке ингредиентов нет соусов'
+
 
     @staticmethod
     @allure.step('Проверяем полученный ответ на запрос списка ингредиентов')
@@ -160,6 +174,7 @@ class HelpersOnCheck:
         # проверяем что поле data содержит список и возвращаем его
         assert type(ingredients) is list and len(ingredients) > 0
         return ingredients
+
 
     #
     # Проверка полученного ответа на запрос получения заказов пользователя
@@ -181,6 +196,7 @@ class HelpersOnCheck:
         # проверяем что количество ингредиентов совпадает с заданным
         assert len(received_ingredients_list) == len(ingredients_list)
 
+
     @staticmethod
     @allure.step('Проверяем в полученном ответе поле "orders" - список заказов')
     def check_received_orders_list(received_body, amount):
@@ -190,6 +206,7 @@ class HelpersOnCheck:
         # проверяем что количество заказов в списке = amount
         assert len(received_orders_list) == amount
         return received_orders_list
+
 
     @staticmethod
     @allure.step('Проверяем в полученном ответе поля "total" и "totalToday"')

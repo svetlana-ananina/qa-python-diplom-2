@@ -14,6 +14,7 @@ class HelpersOnGetIngredients:
     @allure.step('Отправляем запрос на получение списка ингредиентов от API')
     def try_to_get_ingredients():
         # Отправляем запрос на получение списка ингредиентов
+        print('\ntry_to_get_ingredients: Отправляем запрос на получение списка ингредиентов от API ...')
         return r.request_on_get_ingredients()
 
     @staticmethod
