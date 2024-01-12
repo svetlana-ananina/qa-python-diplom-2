@@ -11,7 +11,7 @@ from helpers.helpers_on_get_ingredients import HelpersOnGetIngredients as g
 
 
 @pytest.fixture(scope='class')
-@allure.title('Получаем данные об ингредиентах и инициализируем списки ингредиентов')
+@allure.title('Получаем данные об ингредиентах от API и инициализируем списки ингредиентов')
 def setup_ingredients():
     ingredients = g.get_ingredients()
     TestGetUserOrders.buns_list = g.get_buns_list(ingredients)
