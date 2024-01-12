@@ -47,7 +47,7 @@ class TestGetUserOrders:
         # получаем список ингредиентов и составляем заказ
         ingredients_list = self.__create_burger()
         # отправляем запрос на создание заказа для пользователя
-        order_number, order_name = u.create_order(ingredients_list, auth_token)
+        u.create_order(ingredients_list, auth_token)
         # отправляем запрос на получение заказов пользователя
         response = u.try_to_get_user_orders(auth_token)
 
@@ -55,7 +55,7 @@ class TestGetUserOrders:
         # и получаем тело ответа
         received_body = c.check_success_ok(response)
         # проверяем поле "orders" и количество заказов, получаем список заказов
-        received_orders_list = c.check_received_orders_list(received_body, 1)
+        c.check_received_orders_list(received_body, 1)
 
 
     # 2
@@ -66,7 +66,7 @@ class TestGetUserOrders:
         # получаем список ингредиентов и составляем заказ
         ingredients_list = self.__create_burger()
         # отправляем запрос на создание заказа для пользователя
-        order_number, order_name = u.create_order(ingredients_list, auth_token)
+        u.create_order(ingredients_list, auth_token)
         # отправляем запрос на получение заказов пользователя
         response = u.try_to_get_user_orders(auth_token)
 
@@ -85,7 +85,7 @@ class TestGetUserOrders:
         # получаем список ингредиентов и составляем заказ
         ingredients_list = self.__create_burger()
         # отправляем запрос на создание заказа для пользователя
-        order_number, order_name = u.create_order(ingredients_list, auth_token)
+        u.create_order(ingredients_list, auth_token)
         # отправляем запрос на получение заказов пользователя
         response = u.try_to_get_user_orders(auth_token)
 

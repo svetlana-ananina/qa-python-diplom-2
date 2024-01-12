@@ -1,8 +1,6 @@
 import allure
 import pytest
 
-from helpers.helpers_on_check_response import HelpersOnCheck as c
-from helpers.helpers_on_get_ingredients import HelpersOnGetIngredients as g
 from helpers.helpers_on_create_user import HelpersOnCreateUser as u
 
 

@@ -80,12 +80,6 @@ class HelpersOnCheck:
         return received_message
 
 
-    @staticmethod
-    @allure.step('Получаем значение ключа')
-    def get_key_from_body(response_body, key):
-        return response_body[key]
-
-
     #
     # Проверка полученных данных пользователя после создания/авторизации пользователя
     @staticmethod
