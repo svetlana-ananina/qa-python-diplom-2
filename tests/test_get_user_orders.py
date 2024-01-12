@@ -11,7 +11,7 @@ from helpers.helpers_on_get_ingredients import HelpersOnGetIngredients as g
 
 
 @pytest.fixture(scope='class')
-@allure.title('Инициализируем списки ингредиентов')
+@allure.title('Получаем данные об ингредиентах и инициализируем списки ингредиентов')
 def setup_ingredients():
     ingredients = g.get_ingredients()
     TestGetUserOrders.buns_list = g.get_buns_list(ingredients)
@@ -143,7 +143,6 @@ class TestGetUserOrders:
 
 
     # тесты получения списка заказов и полей "total" и "total_today" для неавторизованного пользователя - сообщение об ошибке
-    # 1
     @allure.title('Проверка получения заказов для неавторизованного пользователя - сообщение об ошибке')
     def test_get_user_orders_unauthorized_user_error(self):
         # получаем заказы пользователя
