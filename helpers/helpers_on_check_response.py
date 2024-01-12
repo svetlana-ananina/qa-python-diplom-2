@@ -209,3 +209,16 @@ class HelpersOnCheck:
         HelpersOnCheck.check_key_and_value_in_body(received_body, KEYS.TOTAL_KEY, amount)
         HelpersOnCheck.check_key_and_value_in_body(received_body, KEYS.TOTAL_TODAY_KEY, amount)
 
+
+    @staticmethod
+    @allure.step('Проверяем в полученном ответе поле "total"')
+    def check_received_orders_total(received_body, amount):
+        # проверяем поле "total" в списке заказов "orders" (в теле ответа)
+        HelpersOnCheck.check_key_and_value_in_body(received_body, KEYS.TOTAL_KEY, amount)
+
+
+    @staticmethod
+    @allure.step('Проверяем в полученном ответе поле "totalToday"')
+    def check_received_orders_total_today(received_body, amount):
+        # проверяем поле "totalToday" в списке заказов "orders" (в теле ответа)
+        HelpersOnCheck.check_key_and_value_in_body(received_body, KEYS.TOTAL_TODAY_KEY, amount)

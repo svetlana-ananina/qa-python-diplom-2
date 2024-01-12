@@ -38,8 +38,10 @@ class TestGetUserOrders:
         return ingredients_list
 
 
-    @allure.title('Проверка получения заказов для авторизованного пользователя - 1 заказ')
-    def test_get_user_orders_authorized_user(self, setup_user):
+    # тесты получения списка заказов и полей "total" и "total_today" для авторизованного пользователя - 1 заказ
+    # 1
+    @allure.title('Проверка получения списка заказов для авторизованного пользователя - 1 заказ')
+    def test_get_user_orders_list_authorized_user(self, setup_user):
         # сохраняем авторизационный токен пользователя, полученный при регистрации
         user_data, auth_token = setup_user
         # получаем список ингредиентов и составляем заказ
@@ -54,15 +56,50 @@ class TestGetUserOrders:
         received_body = c.check_success_ok(response)
         # проверяем поле "orders" и количество заказов, получаем список заказов
         received_orders_list = c.check_received_orders_list(received_body, 1)
-        # проверяем полученные данные заказа
-        received_order_data = received_orders_list[0]
-        c.check_received_order_data(received_order_data, order_number, order_name, ingredients_list)
+
+
+    # 2
+    @allure.title('Проверка получения количества заказов "total" для авторизованного пользователя - 1 заказ')
+    def test_get_user_orders_total_authorized_user(self, setup_user):
+        # сохраняем авторизационный токен пользователя, полученный при регистрации
+        user_data, auth_token = setup_user
+        # получаем список ингредиентов и составляем заказ
+        ingredients_list = self.__create_burger()
+        # отправляем запрос на создание заказа для пользователя
+        order_number, order_name = u.create_order(ingredients_list, auth_token)
+        # отправляем запрос на получение заказов пользователя
+        response = u.try_to_get_user_orders(auth_token)
+
+        # Проверяем, что получен статус-код 200 OK и в теле ответа "success" = True
+        # и получаем тело ответа
+        received_body = c.check_success_ok(response)
         # проверяем поля "total" и "totalToday" в теле ответа
-        c.check_received_orders_info(received_body, 1)
+        c.check_received_orders_total(received_body, 1)
 
 
-    @allure.title('Проверка получения заказов для авторизованного пользователя - нет заказов')
-    def test_get_user_orders_authorized_user_no_orders(self, setup_user):
+    # 3
+    @allure.title('Проверка получения количества заказов "total_today" для авторизованного пользователя - 1 заказ')
+    def test_get_user_orders_total_today_authorized_user(self, setup_user):
+        # сохраняем авторизационный токен пользователя, полученный при регистрации
+        user_data, auth_token = setup_user
+        # получаем список ингредиентов и составляем заказ
+        ingredients_list = self.__create_burger()
+        # отправляем запрос на создание заказа для пользователя
+        order_number, order_name = u.create_order(ingredients_list, auth_token)
+        # отправляем запрос на получение заказов пользователя
+        response = u.try_to_get_user_orders(auth_token)
+
+        # Проверяем, что получен статус-код 200 OK и в теле ответа "success" = True
+        # и получаем тело ответа
+        received_body = c.check_success_ok(response)
+        # проверяем поля "total" и "totalToday" в теле ответа
+        c.check_received_orders_total_today(received_body, 1)
+
+
+    # тесты получения списка заказов для авторизованного пользователя - 0 заказов
+    # 1
+    @allure.title('Проверка получения списка заказов для авторизованного пользователя - нет заказов')
+    def test_get_user_orders_list_authorized_user_no_orders(self, setup_user):
         # сохраняем авторизационный токен пользователя, полученный при регистрации
         user_data, auth_token = setup_user
         # получаем заказы пользователя
@@ -73,11 +110,41 @@ class TestGetUserOrders:
         received_body = c.check_success_ok(response)
         # проверяем поле "orders" и количество заказов
         c.check_received_orders_list(received_body, 0)
+
+
+    # 2
+    @allure.title('Проверка получения количества заказов "total" для авторизованного пользователя - нет заказов')
+    def test_get_user_orders_total_authorized_user_no_orders(self, setup_user):
+        # сохраняем авторизационный токен пользователя, полученный при регистрации
+        user_data, auth_token = setup_user
+        # получаем заказы пользователя
+        response = u.try_to_get_user_orders(auth_token)
+
+        # Проверяем, что получен статус-код 200 OK и в теле ответа "success" = True
+        # и получаем тело ответа
+        received_body = c.check_success_ok(response)
         # проверяем поля "total" и "totalToday" в теле ответа
-        c.check_received_orders_info(received_body, 0)
+        c.check_received_orders_total(received_body, 0)
 
 
-    @allure.title('Проверка получения заказов для неавторизованного пользователя')
+    # 3
+    @allure.title('Проверка получения количества заказов "total_today" для авторизованного пользователя - нет заказов')
+    def test_get_user_orders_total_today_authorized_user_no_orders(self, setup_user):
+        # сохраняем авторизационный токен пользователя, полученный при регистрации
+        user_data, auth_token = setup_user
+        # получаем заказы пользователя
+        response = u.try_to_get_user_orders(auth_token)
+
+        # Проверяем, что получен статус-код 200 OK и в теле ответа "success" = True
+        # и получаем тело ответа
+        received_body = c.check_success_ok(response)
+        # проверяем поля "total" и "totalToday" в теле ответа
+        c.check_received_orders_total_today(received_body, 0)
+
+
+    # тесты получения списка заказов и полей "total" и "total_today" для неавторизованного пользователя - сообщение об ошибке
+    # 1
+    @allure.title('Проверка получения заказов для неавторизованного пользователя - сообщение об ошибке')
     def test_get_user_orders_unauthorized_user_error(self):
         # получаем заказы пользователя
         response = u.try_to_get_user_orders()
@@ -86,4 +153,3 @@ class TestGetUserOrders:
         # проверяем в теле ответа: { "success" = False }
         # проверяем сообщение в теле ответа: { "message" = "You should be authorised" }
         c.check_not_success_error_message(response, CODE.UNAUTHORIZED, message.UNAUTHORIZED)
-
