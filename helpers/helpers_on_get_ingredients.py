@@ -1,7 +1,5 @@
-import pytest
 import allure
 
-from data import ResponseKeys as KEYS
 from helpers.helpers_on_check_response import HelpersOnCheck as c
 from helpers.helpers_on_requests import Requests as r
 

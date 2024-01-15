@@ -1,5 +1,4 @@
 import allure
-import pytest
 import random
 import string
 
